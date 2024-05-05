@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "inbox-agent.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inbox-agent.labels" . | nindent 4 }}
+type: Opaque
+stringData:
+  endpoint: {{ .Values.inboxServer.endpoint }}
+  token: {{ .Values.inboxServer.token }}
