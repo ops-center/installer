@@ -1,9 +1,10 @@
 dns:
   ## Default domain for all emailing components
+  # jmapUrl: "jmap.example.com"
+  # adminUrl: "admin.example.com"
+  # smtpHostname: "smtp.example.com"
   emailDomain: "example.com"
-  jmapUrl: "jmap.example.com"
-  adminUrl: "admin.example.com"
-  smtpHostname: "smtp.example.com"
+  targetIPs: []
 
 # Default values for james
 james:
@@ -40,7 +41,8 @@ james:
         cpu: "1000m"
         memory: "4Gi"
   tls:
-    secretName: the-name-of-a-secret
+    # secretName: the-name-of-a-secret
+    secretName: ""
 
 # Requires Prometheus Operator to be installed
 serviceMonitor:
@@ -53,17 +55,21 @@ serviceMonitor:
 
 ingress:
   enabled: false
-  # ingressClassName: "change-me"
-  annotations:
-    cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
   tls:
-      secretName: the-name-of-a-secret
+    secretName: the-name-of-a-secret
 
 adminIngress:
   enabled: false
-  # ingressClassName: "change-me"
-  annotations:
-    cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
   tls:
       secretName: the-name-of-a-secret
 
@@ -72,16 +78,6 @@ adminIngress:
 # for a better explaination of the Cassandra parameters.
 ###
 cassandra:
-  deploy: "as-pod"
-  namespace: change-me
-  replicaCount: 1
-# deploy: as-ref
-# ips:
-#   - "1.2.3.4"
-#   - "5.6.7.8"
-#   - "9.10.11.12"
-
-# cassandra:
   image:
     repository: cassandra
     pullPolicy: IfNotPresent
@@ -107,16 +103,6 @@ cassandra:
 # Please refer to the values.yaml from the Helm package for databases
 # for a better explaination of the Elastic Search parameters.
 ###
-elasticsearch:
-  deploy: "as-pod"
-  namespace: change-me
-  replicaCount: 1
-# deploy: as-ref
-# ips:
-#   - "1.2.3.4"
-#   - "5.6.7.8"
-#   - "9.10.11.12"
-
 opensearch:
   enabled: true
   image:
@@ -188,15 +174,19 @@ podAnnotations: {}
 podLabels: {}
 
 podSecurityContext: {}
-  # fsGroup: 2000
+# podSecurityContext: # +doc-gen:break
+#   fsGroup: 65534
 
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+# securityContext: # +doc-gen:break
+#   allowPrivilegeEscalation: false
+#   capabilities:
+#     drop: ["ALL"]
+#   readOnlyRootFilesystem: true
+#   runAsNonRoot: true
+#   runAsUser: 65534
+#   seccompProfile:
+#     type: RuntimeDefault
 
 service:
   type: ClusterIP

@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "inbox-server.fullname" . }}-s3
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/component: s3
     {{- include "inbox-server.labels" . | nindent 4 }}

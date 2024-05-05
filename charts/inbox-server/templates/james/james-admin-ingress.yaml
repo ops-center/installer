@@ -1,31 +1,60 @@
-{{- if .Values.adminIngress.enabled }}
+{{- if .Values.adminIngress.enabled -}}
+{{- $fullName := printf "%s-admin" (include "inbox-server.fullname" .) -}}
+{{- $svcPort := 8000 -}}
+
+{{- if and .Values.adminIngress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.adminIngress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.adminIngress.annotations "kubernetes.io/ingress.class" .Values.adminIngress.className}}
+  {{- end }}
+{{- end }}
+
+{{- if and (not (hasKey .Values.adminIngress.annotations "external-dns.alpha.kubernetes.io/target")) .Values.dns.targetIPs }}
+{{- $_ := set .Values.adminIngress.annotations "external-dns.alpha.kubernetes.io/target" (join "," .Values.dns.targetIPs)}}
+{{- end }}
+
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
-  name: james-admin
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inbox-server.labels" . | nindent 4 }}
   {{- with .Values.adminIngress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.adminIngress.ingressClassName }}
-  ingressClassName: {{ .Values.adminIngress.ingressClassName }}
-{{- end }}
-{{- if .Values.adminIngress.tls }}
+  {{- if and .Values.adminIngress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.adminIngress.className }}
+  {{- end }}
+  {{- if .Values.adminIngress.tls }}
   tls:
   - hosts:
-    - {{ .Values.dns.adminUrl }}
-    {{ toYaml .Values.adminIngress.tls }}
-{{- end }}
+    - inbox-admin.{{ .Values.dns.emailDomain }}
+    {{- toYaml .Values.adminIngress.tls | nindent 4 }}
+  {{- end }}
   rules:
-  - host: {{ .Values.dns.adminUrl }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: james-admin
-            port:
-              number: 8000
+    - host: inbox-admin.{{ .Values.dns.emailDomain }}
+      http:
+        paths:
+          - path: /
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
 {{- end }}

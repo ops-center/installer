@@ -1,10 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: james-client
+  name: {{ include "inbox-server.fullname" . }}-client
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    instance: james-imap-smtp
+    app.kubernetes.io/component: imap-smtp
+    {{- include "inbox-server.labels" . | nindent 4 }}
   type: ClusterIP
   ports:
     - protocol: TCP
@@ -14,10 +16,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: james-imap
+  name: {{ include "inbox-server.fullname" . }}-imap
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    instance: james-imap-smtp
+    app.kubernetes.io/component: imap-smtp
+    {{- include "inbox-server.labels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 993
@@ -26,10 +30,15 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: james-admin
+  name: {{ include "inbox-server.fullname" . }}-admin
+  namespace: {{ .Release.Namespace }}
+labels:
+  app.kubernetes.io/part-of: james
+  {{- include "inbox-server.labels" . | nindent 2 }}
 spec:
   selector:
-    app: james
+    app.kubernetes.io/part-of: james
+    {{- include "inbox-server.labels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 8000
@@ -39,10 +48,12 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: jmap
+  name: {{ include "inbox-server.fullname" . }}-jmap
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    instance: james-jmap
+    app.kubernetes.io/component: jmap
+    {{- include "inbox-server.labels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 80
@@ -52,10 +63,12 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: james
+  name: {{ include "inbox-server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    instance: james-imap-smtp
+    app.kubernetes.io/component: imap-smtp
+    {{- include "inbox-server.labels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 25

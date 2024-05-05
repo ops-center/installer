@@ -1,37 +1,43 @@
-{{- $elasticsearchUrl := include "elasticsearch.url.list" . }}
+{{- $opensearchUrl := include "opensearch.url.list" . }}
 {{- $cassandraUrl := include "cassandra.url.list" . }}
 {{- $jamesOpts := include "inbox-server.jvmOpts" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: james-jmap
+  name: {{ include "inbox-server.fullname" . }}-jmap
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: jmap
+    {{- include "inbox-server.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      instance: james-jmap
+      app.kubernetes.io/component: jmap
+      {{- include "inbox-server.labels" . | nindent 6 }}
   replicas: {{ .Values.james.replicaJmapInstanceCount }}
   template:
     metadata:
       labels:
-        app: james
-        instance: james-jmap
+        app.kubernetes.io/part-of: james
+        app.kubernetes.io/component: jmap
+        {{- include "inbox-server.labels" . | nindent 8 }}
     spec:
     {{- if .Values.dockerCredentials }}
       imagePullSecrets:
       - name: docker-registry-secret
     {{- end }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - james
-              topologyKey: "kubernetes.io/hostname"
+      # affinity:
+      #   podAntiAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       podAffinityTerm:
+      #         labelSelector:
+      #           matchExpressions:
+      #           - key: app
+      #             operator: In
+      #             values:
+      #             - james
+      #         topologyKey: "kubernetes.io/hostname"
 
       containers:
       - name: james-jmap
@@ -50,7 +56,7 @@ spec:
           periodSeconds: 30
         envFrom:
           - secretRef:
-              name: s3-james-credentials
+              name: {{ include "inbox-server.fullname" . }}-s3-auth
         env:
         - name: ELASTICSEARCH_INIT_TIMEOUT
           value: "120"
@@ -65,15 +71,15 @@ spec:
         - name: JAMES_CASSANDRA_USER
           valueFrom:
             secretKeyRef:
-              name: db-cassandra-account-james
-              key: james-user
+              name: {{ include "inbox-server.fullname" . }}-cassandra-auth
+              key: username
         - name: JAMES_CASSANDRA_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-cassandra-account-james
-              key: james-password
+              name: {{ include "inbox-server.fullname" . }}-cassandra-auth
+              key: password
         - name: JAMES_ES_NODES_URLS
-          value: "{{ $elasticsearchUrl | trimSuffix "," }}"
+          value: "{{ $opensearchUrl | trimSuffix "," }}"
         - name: JAMES_AMQP_HOST
           value: {{ .Values.james.env.jamesRabbitHost }}
         - name: JAMES_AMQP_PORT
@@ -83,13 +89,13 @@ spec:
         - name: JAMES_AMQP_USERNAME
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-account-james
-              key: rabbitmq-user
+              name: {{ include "inbox-server.fullname" . }}-rabbitmq-auth
+              key: username
         - name: JAMES_AMQP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-account-james
-              key: rabbitmq-password
+              name: {{ include "inbox-server.fullname" . }}-rabbitmq-auth
+              key: password
         - name: JAMES_DKIM_SIGN_SMTP
           value: {{ .Values.james.env.jamesDkimSignSmtp }}
         - name: JAMES_DKIM_SIGN_DOMAIN
@@ -105,22 +111,22 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        {{- if and (.Values.james.secret.esUser) (.Values.james.secret.esPassword) }}
+        {{- if and (.Values.opensearch.secret.username) (.Values.opensearch.secret.password) }}
         - name: JAMES_ES_USER
           valueFrom:
             secretKeyRef:
-              name: db-es-account-james
-              key: james-user
+              name: {{ include "inbox-server.fullname" . }}-openssearch-auth
+              key: username
         - name: JAMES_ES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-es-account-james
-              key: james-password
+              name: {{ include "inbox-server.fullname" . }}-openssearch-auth
+              key: password
         {{- end }}
         - name: JAMES_DEFAULT_DOMAIN
           value: {{ .Values.dns.emailDomain }}
         - name: JAMES_SMTP_HOSTNAME
-          value: "{{ .Values.dns.smtpHostname }}"
+          value: "smtp.{{ .Values.dns.emailDomain }}"
         - name: JAMES_SMTP_MESSAGE
           value: "{{ .Values.james.env.jamesHELOMessage }}"
         - name: JAMES_CASSANDRA_KEYSPACE
@@ -128,7 +134,7 @@ spec:
         - name: JAMES_CASSANDRA_CACHE_KEYSPACE
           value: {{ .Values.james.env.jamesCassandraCacheKeyspace }}
         - name: JAMES_BUCKET_SUFFIX
-          value: "{{ .Values.james.secret.s3.bucketNameSuffix }}"
+          value: "{{ .Values.s3.bucketNameSuffix }}"
         - name: JAMES_ES_MAILBOX_INDEX
           value: {{ .Values.james.env.jamesEsMailboxIndex }}
         - name: JAMES_ES_CLUSTER_NAME
@@ -175,9 +181,9 @@ spec:
         projected:
           sources:
           - secret:
-              name: james-config
+              name: {{ include "inbox-server.fullname" . }}-config
           - secret:
-              name: james-jwt-key
+              name: {{ include "inbox-server.fullname" . }}-jwt-key
       {{- if .Values.james.tls.secretName }}
       - name: james-secrets
         projected:
@@ -190,39 +196,45 @@ spec:
               - key: tls.crt
                 path: tls.crt
         {{- end }}
-      # priorityClassName: application-scope-medium
+
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: james-imap-smtp
+  name: {{ include "inbox-server.fullname" . }}-imap-smtp
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: imap-smtp
+    {{- include "inbox-server.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      instance: james-imap-smtp
+      app.kubernetes.io/component: imap-smtp
+      {{- include "inbox-server.labels" . | nindent 6 }}
   replicas: {{ .Values.james.replicaImapSmtpInstanceCount }}
   template:
     metadata:
       labels:
-        app: james
-        instance: james-imap-smtp
+        app.kubernetes.io/part-of: james
+        app.kubernetes.io/component: imap-smtp
+        {{- include "inbox-server.labels" . | nindent 8 }}
     spec:
     {{- if .Values.dockerCredentials }}
       imagePullSecrets:
       - name: docker-registry-secret
     {{- end }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - james
-              topologyKey: "kubernetes.io/hostname"
+      # affinity:
+      #   podAntiAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       podAffinityTerm:
+      #         labelSelector:
+      #           matchExpressions:
+      #           - key: app
+      #             operator: In
+      #             values:
+      #             - james
+      #         topologyKey: "kubernetes.io/hostname"
 
       containers:
       - name: james-imap-smtp
@@ -241,7 +253,7 @@ spec:
           periodSeconds: 30
         envFrom:
           - secretRef:
-              name: s3-james-credentials
+              name: {{ include "inbox-server.fullname" . }}-s3-auth
         env:
         - name: ELASTICSEARCH_INIT_TIMEOUT
           value: "120"
@@ -256,15 +268,15 @@ spec:
         - name: JAMES_CASSANDRA_USER
           valueFrom:
             secretKeyRef:
-              name: db-cassandra-account-james
-              key: james-user
+              name: {{ include "inbox-server.fullname" . }}-cassandra-auth
+              key: username
         - name: JAMES_CASSANDRA_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-cassandra-account-james
-              key: james-password
+              name: {{ include "inbox-server.fullname" . }}-cassandra-auth
+              key: password
         - name: JAMES_ES_NODES_URLS
-          value: "{{ $elasticsearchUrl | trimSuffix "," }}"
+          value: "{{ $opensearchUrl | trimSuffix "," }}"
         - name: JAMES_AMQP_HOST
           value: {{ .Values.james.env.jamesRabbitHost }}
         - name: JAMES_AMQP_PORT
@@ -274,13 +286,13 @@ spec:
         - name: JAMES_AMQP_USERNAME
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-account-james
-              key: rabbitmq-user
+              name: {{ include "inbox-server.fullname" . }}-rabbitmq-auth
+              key: username
         - name: JAMES_AMQP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: rabbitmq-account-james
-              key: rabbitmq-password
+              name: {{ include "inbox-server.fullname" . }}-rabbitmq-auth
+              key: password
         - name: JAMES_DKIM_SIGN_SMTP
           value: {{ .Values.james.env.jamesDkimSignSmtp }}
         - name: JAMES_DKIM_SIGN_DOMAIN
@@ -296,22 +308,22 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        {{- if and (.Values.james.secret.esUser) (.Values.james.secret.esPassword) }}
+        {{- if and (.Values.opensearch.secret.username) (.Values.opensearch.secret.password) }}
         - name: JAMES_ES_USER
           valueFrom:
             secretKeyRef:
-              name: db-es-account-james
-              key: james-user
+              name: {{ include "inbox-server.fullname" . }}-openssearch-auth
+              key: username
         - name: JAMES_ES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-es-account-james
-              key: james-password
+              name: {{ include "inbox-server.fullname" . }}-openssearch-auth
+              key: password
         {{- end }}
         - name: JAMES_DEFAULT_DOMAIN
           value: {{ .Values.dns.emailDomain }}
         - name: JAMES_SMTP_HOSTNAME
-          value: "{{ .Values.dns.smtpHostname }}"
+          value: "smtp.{{ .Values.dns.emailDomain }}"
         - name: JAMES_SMTP_MESSAGE
           value: "{{ .Values.james.env.jamesHELOMessage }}"
         - name: JAMES_CASSANDRA_KEYSPACE
@@ -319,7 +331,7 @@ spec:
         - name: JAMES_CASSANDRA_CACHE_KEYSPACE
           value: {{ .Values.james.env.jamesCassandraCacheKeyspace }}
         - name: JAMES_BUCKET_SUFFIX
-          value: "{{ .Values.james.secret.s3.bucketNameSuffix }}"
+          value: "{{ .Values.s3.bucketNameSuffix }}"
         - name: JAMES_ES_MAILBOX_INDEX
           value: {{ .Values.james.env.jamesEsMailboxIndex }}
         - name: JAMES_ES_CLUSTER_NAME
@@ -369,9 +381,9 @@ spec:
         projected:
           sources:
           - secret:
-              name: james-config
+              name: {{ include "inbox-server.fullname" . }}-config
           - secret:
-              name: james-jwt-key
+              name: {{ include "inbox-server.fullname" . }}-jwt-key
       {{- if .Values.james.tls.secretName }}
       - name: james-secrets
         projected:
@@ -384,4 +396,3 @@ spec:
               - key: tls.crt
                 path: tls.crt
         {{- end }}
-      # priorityClassName: application-scope-medium

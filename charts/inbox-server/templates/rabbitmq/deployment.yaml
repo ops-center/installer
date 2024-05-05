@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "inbox-server.fullname" . }}-rabbitmq
+  namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/component: rabbitmq
     {{- include "inbox-server.labels" . | nindent 4 }}

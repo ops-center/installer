@@ -1,31 +1,60 @@
-{{- if .Values.ingress.enabled }}
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := printf "%s-jmap" (include "inbox-server.fullname" .) -}}
+{{- $svcPort := 80 -}}
+
+{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- end }}
+
+{{- if and (not (hasKey .Values.ingress.annotations "external-dns.alpha.kubernetes.io/target")) .Values.dns.targetIPs }}
+{{- $_ := set .Values.ingress.annotations "external-dns.alpha.kubernetes.io/target" (join "," .Values.dns.targetIPs)}}
+{{- end }}
+
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
-  name: jmap
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inbox-server.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.ingress.ingressClassName }}
-{{- end }}
-{{- if .Values.ingress.tls }}
+  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
   tls:
   - hosts:
-    - {{ .Values.dns.jmapUrl }}
-    {{ toYaml .Values.ingress.tls }}
-{{- end }}
+    - jmap.{{ .Values.dns.emailDomain }}
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
   rules:
-  - host: {{ .Values.dns.jmapUrl }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: jmap
-            port:
-              number: 80
+    - host: jmap.{{ .Values.dns.emailDomain }}
+      http:
+        paths:
+          - path: /
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
 {{- end }}
