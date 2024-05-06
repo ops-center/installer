@@ -19,26 +19,64 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<!--
-http://james.apache.org/server/config-imap4.html
--->
-<imapservers>
-	<imapserver enabled="${env:JAMES_IMAP_SMTP_ENABLED}">
-		<jmxName>imapserver-ssl</jmxName>
-		<bind>0.0.0.0:993</bind>
-		<connectionBacklog>200</connectionBacklog>
-		<tls socketTLS="true" startTLS="false">
-                    <privateKey>file://secrets/tls.key</privateKey>
-                    <certificates>file://secrets/tls.crt</certificates>
-		</tls>
-		<connectionLimit>0</connectionLimit>
-		<connectionLimitPerIP>0</connectionLimitPerIP>
-		<inMemorySizeLimit>102400</inMemorySizeLimit>
-		<literalSizeLimit>${env:JAMES_MESSAGE_SIZE}</literalSizeLimit>
-		<connectionBacklog>9600</connectionBacklog>
-		<compress>true</compress>
-		<timeout>3600</timeout>
-		<connectiontimeout>3600</connectiontimeout>
-	</imapserver>
-</imapservers>
+<!-- Read https://james.apache.org/server/config-imap4.html for further details -->
 
+<imapservers>
+    <imapserver enabled="true">
+        <jmxName>imapserver</jmxName>
+        <bind>0.0.0.0:143</bind>
+        <connectionBacklog>200</connectionBacklog>
+        <tls socketTLS="false" startTLS="true">
+            <!-- To create a new keystore execute:
+              keytool -genkey -alias james -keyalg RSA -storetype PKCS12 -keystore /path/to/james/conf/keystore
+             -->
+            <keystore>file://keystore</keystore>
+            <keystoreType>PKCS12</keystoreType>
+            <secret>james72laBalle</secret>
+            <provider>org.bouncycastle.jce.provider.BouncyCastleProvider</provider>
+
+            <!-- Alternatively TLS keys can be supplied via PEM files -->
+            <!-- <privateKey>file://conf/private.key</privateKey> -->
+            <!-- <certificates>file://conf/certs.self-signed.csr</certificates> -->
+            <!-- An optional secret might be specified for the private key -->
+            <!-- <secret>james72laBalle</secret> -->
+        </tls>
+        <connectionLimit>0</connectionLimit>
+        <connectionLimitPerIP>0</connectionLimitPerIP>
+        <idleTimeInterval>120</idleTimeInterval>
+        <idleTimeIntervalUnit>SECONDS</idleTimeIntervalUnit>
+        <enableIdle>true</enableIdle>
+        <plainAuthDisallowed>true</plainAuthDisallowed>
+        <auth>
+            <plainAuthEnabled>true</plainAuthEnabled>
+        </auth>
+    </imapserver>
+    <imapserver enabled="true">
+        <jmxName>imapserver-ssl</jmxName>
+        <bind>0.0.0.0:993</bind>
+        <connectionBacklog>200</connectionBacklog>
+        <tls socketTLS="true" startTLS="false">
+            <!-- To create a new keystore execute:
+              keytool -genkey -alias james -keyalg RSA -storetype PKCS12 -keystore /path/to/james/conf/keystore
+             -->
+            <keystore>file://keystore</keystore>
+            <keystoreType>PKCS12</keystoreType>
+            <secret>james72laBalle</secret>
+            <provider>org.bouncycastle.jce.provider.BouncyCastleProvider</provider>
+
+            <!-- Alternatively TLS keys can be supplied via PEM files -->
+            <!-- <privateKey>file://conf/private.key</privateKey> -->
+            <!-- <certificates>file://conf/certs.self-signed.csr</certificates> -->
+            <!-- An optional secret might be specified for the private key -->
+            <!-- <secret>james72laBalle</secret> -->
+        </tls>
+        <connectionLimit>0</connectionLimit>
+        <connectionLimitPerIP>0</connectionLimitPerIP>
+        <idleTimeInterval>120</idleTimeInterval>
+        <idleTimeIntervalUnit>SECONDS</idleTimeIntervalUnit>
+        <enableIdle>true</enableIdle>
+        <auth>
+            <plainAuthEnabled>true</plainAuthEnabled>
+        </auth>
+    </imapserver>
+</imapservers>

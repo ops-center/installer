@@ -24,11 +24,11 @@ james:
     jamesEsNbReplica: 1
     jamesEsMailboxReadAlias: "read-mailbox"
     jamesEsMailboxWriteAlias: "write-mailbox"
-    jamesRabbitHost: "change-me"
+    jamesRabbitHost: "inbox-server-rabbitmq"
     jamesMessageSize: 25M
     jamesDkimSignSmtp: "dkimselector"
     jamesDkimSignDomain: "mail.example.com"
-    cassandraReplicationFactor: 3
+    cassandraReplicationFactor: 1
     jamesHELOMessage: "change-me"
     jvmOpts: "-Xms3g -Xmx3g"
     glowroot:
@@ -133,7 +133,7 @@ rabbitmq:
   # volumeMounts
 
 s3:
-  enabled: true
+  enabled: false
   image:
     repository: ghcr.io/appscode/cloudserver
     pullPolicy: IfNotPresent
@@ -148,7 +148,7 @@ s3:
   # volumeMounts
 
 tika:
-  enabled: true
+  enabled: false
   image:
     repository: apache/tika
     pullPolicy: IfNotPresent

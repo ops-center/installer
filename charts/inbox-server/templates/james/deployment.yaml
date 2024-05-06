@@ -42,18 +42,20 @@ spec:
       containers:
       - name: james-jmap
         image: {{ .Values.james.image }}
-        readinessProbe:
-          httpGet:
-            path: /healthcheck/checks/Guice%20application%20lifecycle
-            port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /healthcheck/checks/Guice%20application%20lifecycle
-            port: 8000
-          initialDelaySeconds: 91
-          periodSeconds: 30
+        args:
+          - --generate-keystore
+        # readinessProbe:
+        #   httpGet:
+        #     path: /healthcheck/checks/Guice%20application%20lifecycle
+        #     port: 8000
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 10
+        # livenessProbe:
+        #   httpGet:
+        #     path: /healthcheck/checks/Guice%20application%20lifecycle
+        #     port: 8000
+        #   initialDelaySeconds: 91
+        #   periodSeconds: 30
         envFrom:
           - secretRef:
               name: {{ include "inbox-server.fullname" . }}-s3-auth
@@ -180,7 +182,7 @@ spec:
       - name: all-in-one-config
         projected:
           sources:
-          - secret:
+          - configMap:
               name: {{ include "inbox-server.fullname" . }}-config
           - secret:
               name: {{ include "inbox-server.fullname" . }}-jwt-key
@@ -239,18 +241,20 @@ spec:
       containers:
       - name: james-imap-smtp
         image: {{ .Values.james.image }}
-        readinessProbe:
-          httpGet:
-            path: /healthcheck/checks/Guice%20application%20lifecycle
-            port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /healthcheck/checks/Guice%20application%20lifecycle
-            port: 8000
-          initialDelaySeconds: 91
-          periodSeconds: 30
+        args:
+          - --generate-keystore
+        # readinessProbe:
+        #   httpGet:
+        #     path: /healthcheck/checks/Guice%20application%20lifecycle
+        #     port: 8000
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 10
+        # livenessProbe:
+        #   httpGet:
+        #     path: /healthcheck/checks/Guice%20application%20lifecycle
+        #     port: 8000
+        #   initialDelaySeconds: 91
+        #   periodSeconds: 30
         envFrom:
           - secretRef:
               name: {{ include "inbox-server.fullname" . }}-s3-auth
@@ -380,7 +384,7 @@ spec:
       - name: all-in-one-config
         projected:
           sources:
-          - secret:
+          - configMap:
               name: {{ include "inbox-server.fullname" . }}-config
           - secret:
               name: {{ include "inbox-server.fullname" . }}-jwt-key
