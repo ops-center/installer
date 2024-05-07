@@ -29,6 +29,7 @@ james:
     jamesDkimSignSmtp: "dkimselector"
     jamesDkimSignDomain: "mail.example.com"
     cassandraReplicationFactor: 1
+    jamesKeyStorePassword: james72laBalle
     jamesHELOMessage: "change-me"
     jvmOpts: "-Xms3g -Xmx3g"
     glowroot:
