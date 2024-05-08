@@ -70,6 +70,8 @@ spec:
           value: "{{ $cassandraUrl | trimSuffix "," }}"
         - name: JAMES_CASSANDRA_REPLICATION_FACTOR
           value: "{{ .Values.james.env.cassandraReplicationFactor }}"
+        - name: JAMES_KEYSTORE_PASSWORD
+          value: "{{ .Values.james.env.jamesKeyStorePassword }}"
         - name: JAMES_CASSANDRA_USER
           valueFrom:
             secretKeyRef:
