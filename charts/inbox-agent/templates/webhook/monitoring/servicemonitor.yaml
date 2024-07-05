@@ -18,6 +18,7 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
+      app.kubernetes.io/component: webhook-server
       {{- include "inbox-agent.selectorLabels" . | nindent 6 }}
   endpoints:
   {{- if .Values.monitoring.operator }}

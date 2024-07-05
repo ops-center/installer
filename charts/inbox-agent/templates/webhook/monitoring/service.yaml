@@ -1,9 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "inbox-agent.fullname" . }}
+  name: {{ include "inbox-agent.fullname" . }}-webhook-monitoring
   namespace: {{ .Release.Namespace }}
   labels:
+    app.kubernetes.io/component: webhook-server
     {{- include "inbox-agent.labels" . | nindent 4 }}
   {{- if eq .Values.monitoring.agent "prometheus.io/builtin" }}
   annotations:
