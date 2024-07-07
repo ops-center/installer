@@ -30,7 +30,7 @@ spec:
       ca:
         secret:
           name: {{ include "inbox-agent.fullname" . }}-webhook-cert
-          key: tls.crt
+          key: ca.crt
       serverName: "{{ include "inbox-agent.fullname" . }}.{{ .Release.Namespace }}.svc"
   {{- end }}
 {{- end }}
