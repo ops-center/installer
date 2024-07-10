@@ -78,7 +78,12 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ include "inbox-agent.fullname" . }}-config
-              key: endpoint
+              key: jmapEndpoint
+        - name: INBOX_SERVER_WEBADMIN_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "inbox-agent.fullname" . }}-config
+              key: webadminEndpoint
         - name: INBOX_SERVER_TOKEN
           valueFrom:
             secretKeyRef:
