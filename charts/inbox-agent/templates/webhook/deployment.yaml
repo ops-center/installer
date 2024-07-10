@@ -61,6 +61,14 @@ spec:
           - webhook
           - --webhook-name={{ include "inbox-agent.fullname" . }}
         env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         - name: INBOX_SERVER_JMAP_ENDPOINT
           valueFrom:
             secretKeyRef:
@@ -75,15 +83,6 @@ spec:
         - name: webhook-server
           containerPort: 9443
           protocol: TCP
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
       {{- if .Values.apiserver.healthcheck.enabled }}
         readinessProbe:
           httpGet:
