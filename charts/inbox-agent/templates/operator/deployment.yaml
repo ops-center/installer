@@ -57,12 +57,18 @@ spec:
         securityContext:
           {{- toYaml .Values.operator.securityContext | nindent 10 }}
         args:
-          - operator
-          - --v={{ .Values.logLevel }}
-          - --secure-port=8443
-          - --audit-log-path=-
-          - --tls-cert-file=/var/serving-cert/tls.crt
-          - --tls-private-key-file=/var/serving-cert/tls.key
+        - operator
+        - --v={{ .Values.logLevel }}
+        - --secure-port=8443
+        - --audit-log-path=-
+        - --tls-cert-file=/var/serving-cert/tls.crt
+        - --tls-private-key-file=/var/serving-cert/tls.key
+      {{- if .Values.inboxServer.jmapEndpoint }}
+        - --jmapEndpoint={{ .Values.inboxServer.jmapEndpoint }}
+      {{- end }}
+      {{- if .Values.inboxServer.webadminEndpoint }}
+        - --webadminEndpoint={{ .Values.inboxServer.webadminEndpoint }}
+      {{- end }}
         ports:
         - containerPort: 8443
         env:
