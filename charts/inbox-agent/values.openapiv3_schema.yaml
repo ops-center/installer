@@ -945,13 +945,16 @@ properties:
     type: array
   inboxServer:
     properties:
-      endpoint:
+      jmapEndpoint:
         type: string
       token:
         type: string
+      webadminEndpoint:
+        type: string
     required:
-    - endpoint
+    - jmapEndpoint
     - token
+    - webadminEndpoint
     type: object
   logLevel:
     format: int32

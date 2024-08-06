@@ -58,8 +58,14 @@ spec:
         securityContext:
           {{- toYaml .Values.operator.securityContext | nindent 10 }}
         args:
-          - webhook
-          - --webhook-name={{ include "inbox-agent.fullname" . }}
+        - webhook
+        - --webhook-name={{ include "inbox-agent.fullname" . }}
+      {{- if .Values.inboxServer.jmapEndpoint }}
+        - --jmapEndpoint={{ .Values.inboxServer.jmapEndpoint }}
+      {{- end }}
+      {{- if .Values.inboxServer.webadminEndpoint }}
+        - --webadminEndpoint={{ .Values.inboxServer.webadminEndpoint }}
+      {{- end }}
         env:
         - name: POD_NAME
           valueFrom:
@@ -69,11 +75,16 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: INBOX_SERVER_WEBADMIN_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "inbox-agent.fullname" . }}-config
+              key: webadminEndpoint
         - name: INBOX_SERVER_JMAP_ENDPOINT
           valueFrom:
             secretKeyRef:
               name: {{ include "inbox-agent.fullname" . }}-config
-              key: endpoint
+              key: jmapEndpoint
         - name: INBOX_SERVER_TOKEN
           valueFrom:
             secretKeyRef:
