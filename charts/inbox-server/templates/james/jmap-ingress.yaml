@@ -2,23 +2,13 @@
 {{- $fullName := printf "%s-jmap" (include "inbox-server.fullname" .) -}}
 {{- $svcPort := 80 -}}
 
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
-  {{- end }}
-{{- end }}
-
 {{- if and (not (hasKey .Values.ingress.annotations "external-dns.alpha.kubernetes.io/target")) .Values.dns.targetIPs }}
 {{- $_ := set .Values.ingress.annotations "external-dns.alpha.kubernetes.io/target" (join "," .Values.dns.targetIPs)}}
 {{- end }}
+{{- $_ := set .Values.ingress.annotations "nginx.ingress.kubernetes.io/use-regex" "true" }}
+{{- $_ := set .Values.ingress.annotations "nginx.ingress.kubernetes.io/rewrite-target" "/$2" }}
 
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -30,31 +20,23 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
-  - hosts:
-    - jmap.{{ .Values.dns.emailDomain }}
+  - hosts: {{ list .Values.dns.domain | compact | toJson }}
     {{- toYaml .Values.ingress.tls | nindent 4 }}
   {{- end }}
   rules:
-    - host: jmap.{{ .Values.dns.emailDomain }}
+    - host: {{ .Values.dns.domain }}
       http:
         paths:
-          - path: /
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
-            {{- end }}
+          - path: /jmap(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-              {{- end }}
 {{- end }}
