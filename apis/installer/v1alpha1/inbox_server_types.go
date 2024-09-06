@@ -77,16 +77,18 @@ type InboxServerSpec struct {
 }
 
 type DnsSpec struct {
+	Domain      string   `json:"domain"`
 	EmailDomain string   `json:"emailDomain"`
 	TargetIPs   []string `json:"targetIPs"`
 }
 
 type JamesSpec struct {
-	ReplicaJmapInstanceCount     int      `json:"replicaJmapInstanceCount"`
-	ReplicaImapSmtpInstanceCount int      `json:"replicaImapSmtpInstanceCount"`
-	Image                        string   `json:"image"`
-	Env                          JamesEnv `json:"env"`
-	TLS                          TLSSpec  `json:"tls"`
+	ReplicaJmapInstanceCount     int          `json:"replicaJmapInstanceCount"`
+	ReplicaImapSmtpInstanceCount int          `json:"replicaImapSmtpInstanceCount"`
+	Image                        string       `json:"image"`
+	Env                          JamesEnv     `json:"env"`
+	TLS                          TLSSpec      `json:"tls"`
+	Secret                       *JamesSecret `json:"secret,omitempty"`
 }
 
 type JamesEnv struct {
@@ -110,6 +112,13 @@ type JamesEnv struct {
 	JvmOpts                      string                    `json:"jvmOpts"`
 	Glowroot                     GlowrootSpec              `json:"glowroot"`
 	JamesResources               core.ResourceRequirements `json:"jamesResources"`
+}
+
+type JamesSecret struct {
+	AdminJWTPublicKey string `json:"adminJWTPublicKey"`
+	JwtPublicKey      string `json:"jwtPublicKey"`
+	JwtPrivateKey     string `json:"jwtPrivateKey"`
+	DkimPrivateKey    string `json:"dkimPrivateKey"`
 }
 
 type GlowrootSpec struct {

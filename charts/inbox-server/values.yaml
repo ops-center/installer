@@ -3,6 +3,8 @@ dns:
   # jmapUrl: "jmap.example.com"
   # adminUrl: "admin.example.com"
   # smtpHostname: "smtp.example.com"
+  domain: "example.com"
+  # in ip mode, the emailDomain is ace.internal, otherwise same as domain
   emailDomain: "example.com"
   targetIPs: []
 
