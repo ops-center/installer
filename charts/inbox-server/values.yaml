@@ -11,7 +11,7 @@ dns:
 # Default values for james
 james:
   replicaJmapInstanceCount: 1
-  replicaImapSmtpInstanceCount: 1
+  replicaImapSmtpInstanceCount: 0
   image: ghcr.io/appscode/inbox-server:latest
   ## Environment for James
   env:

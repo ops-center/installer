@@ -5,8 +5,8 @@
 {{- if and (not (hasKey .Values.adminIngress.annotations "external-dns.alpha.kubernetes.io/target")) .Values.dns.targetIPs }}
 {{- $_ := set .Values.adminIngress.annotations "external-dns.alpha.kubernetes.io/target" (join "," .Values.dns.targetIPs)}}
 {{- end }}
-{{- $_ := set .Values.ingress.annotations "nginx.ingress.kubernetes.io/use-regex" "true" }}
-{{- $_ := set .Values.ingress.annotations "nginx.ingress.kubernetes.io/rewrite-target" "/$2" }}
+{{- $_ := set .Values.adminIngress.annotations "nginx.ingress.kubernetes.io/use-regex" "true" }}
+{{- $_ := set .Values.adminIngress.annotations "nginx.ingress.kubernetes.io/rewrite-target" "/$2" }}
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
