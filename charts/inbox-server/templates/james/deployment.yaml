@@ -127,7 +127,14 @@ spec:
               name: {{ include "inbox-server.fullname" . }}-openssearch-auth
               key: password
         {{- end }}
-        - name: JAMES_DEFAULT_DOMAIN
+        {{ if .Values.dns.domain }}
+        - name: JAMES_SERVER_DOMAIN
+          value: {{ .Values.dns.domain }}
+        {{ else }}
+        - name: JAMES_SERVER_DOMAIN
+          value: {{ first .Values.dns.targetIPs }}
+        {{ end }}
+        - name: JAMES_EMAIL_DOMAIN
           value: {{ .Values.dns.emailDomain }}
         - name: JAMES_SMTP_HOSTNAME
           value: "smtp.{{ .Values.dns.emailDomain }}"
@@ -162,7 +169,7 @@ spec:
         - name: JAVA_TOOL_OPTIONS
           value: "{{ $jamesOpts }}"
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         - containerPort: 8000
         - containerPort: 4000
         resources:
@@ -326,7 +333,14 @@ spec:
               name: {{ include "inbox-server.fullname" . }}-openssearch-auth
               key: password
         {{- end }}
-        - name: JAMES_DEFAULT_DOMAIN
+        {{ if .Values.dns.domain }}
+        - name: JAMES_SERVER_DOMAIN
+          value: {{ .Values.dns.domain }}
+        {{ else }}
+        - name: JAMES_SERVER_DOMAIN
+          value: {{ first .Values.dns.targetIPs }}
+        {{ end }}
+        - name: JAMES_EMAIL_DOMAIN
           value: {{ .Values.dns.emailDomain }}
         - name: JAMES_SMTP_HOSTNAME
           value: "smtp.{{ .Values.dns.emailDomain }}"

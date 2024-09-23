@@ -20,5 +20,5 @@
 <domainlist>
     <autodetect>false</autodetect>
     <autodetectIP>false</autodetectIP>
-    <defaultDomain>${env:JAMES_DEFAULT_DOMAIN}</defaultDomain>
+    <defaultDomain>${env:JAMES_EMAIL_DOMAIN}</defaultDomain>
 </domainlist>

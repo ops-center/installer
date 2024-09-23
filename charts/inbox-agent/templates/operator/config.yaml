@@ -7,6 +7,6 @@ metadata:
     {{- include "inbox-agent.labels" . | nindent 4 }}
 type: Opaque
 stringData:
-  jmapEndpoint: {{ .Values.inboxServer.jmapEndpoint }}
+  jmapSessionEndpoint: {{ .Values.inboxServer.jmapSessionEndpoint }}
   webadminEndpoint: {{ .Values.inboxServer.webadminEndpoint }}
   token: {{.Values.inboxServer.token}}

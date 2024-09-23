@@ -96,9 +96,9 @@ type InboxAgentApiserver struct {
 }
 
 type InboxServerInfo struct {
-	JMAPEndpoint     string `json:"jmapEndpoint"`
-	WebadminEndpoint string `json:"webadminEndpoint"`
-	Token            string `json:"token"`
+	JMAPSessionEndpoint string `json:"jmapSessionEndpoint"`
+	WebadminEndpoint    string `json:"webadminEndpoint"`
+	Token               string `json:"token"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

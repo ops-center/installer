@@ -945,14 +945,14 @@ properties:
     type: array
   inboxServer:
     properties:
-      jmapEndpoint:
+      jmapSessionEndpoint:
         type: string
       token:
         type: string
       webadminEndpoint:
         type: string
     required:
-    - jmapEndpoint
+    - jmapSessionEndpoint
     - token
     - webadminEndpoint
     type: object
