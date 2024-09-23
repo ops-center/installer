@@ -129,10 +129,10 @@ spec:
         {{- end }}
         {{ if .Values.dns.domain }}
         - name: JAMES_SERVER_DOMAIN
-          value: {{ .Values.dns.domain }}
+          value: "{{ .Values.dns.domain }}"
         {{ else }}
         - name: JAMES_SERVER_DOMAIN
-          value: {{ first .Values.dns.targetIPs }}
+          value: "{{ first .Values.dns.targetIPs }}"
         {{ end }}
         - name: JAMES_EMAIL_DOMAIN
           value: {{ .Values.dns.emailDomain }}
@@ -335,10 +335,10 @@ spec:
         {{- end }}
         {{ if .Values.dns.domain }}
         - name: JAMES_SERVER_DOMAIN
-          value: {{ .Values.dns.domain }}
+          value: "{{ .Values.dns.domain }}"
         {{ else }}
         - name: JAMES_SERVER_DOMAIN
-          value: {{ first .Values.dns.targetIPs }}
+          value: "{{ first .Values.dns.targetIPs }}"
         {{ end }}
         - name: JAMES_EMAIL_DOMAIN
           value: {{ .Values.dns.emailDomain }}
