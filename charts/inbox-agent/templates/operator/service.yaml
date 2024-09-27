@@ -11,6 +11,7 @@ spec:
   - name: api
     port: 443
     targetPort: 8443
+    protocol: TCP
   selector:
     app.kubernetes.io/component: operator
     {{- include "inbox-agent.selectorLabels" . | nindent 4 }}
