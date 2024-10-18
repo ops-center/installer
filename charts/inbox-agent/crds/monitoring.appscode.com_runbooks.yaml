@@ -1,6 +1,9 @@
+
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
+  creationTimestamp: null
   name: runbooks.monitoring.appscode.com
 spec:
   group: monitoring.appscode.com
@@ -39,9 +42,6 @@ spec:
                       x-kubernetes-preserve-unknown-fields: true
                     type:
                       type: string
-                  required:
-                  - args
-                  - type
                   type: object
                 type: array
               remedyActions:
@@ -52,13 +52,13 @@ spec:
                       x-kubernetes-preserve-unknown-fields: true
                     type:
                       type: string
-                  required:
-                  - args
-                  - type
                   type: object
                 type: array
-            required:
-            - remedyActions
+              variables:
+                items:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                type: array
             type: object
           status:
             description: RunbookStatus defines the observed state of Runbook
