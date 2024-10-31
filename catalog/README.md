@@ -1,0 +1,7 @@
+# CVE Report
+|                                                      IMAGE REF                                                      |        OS        | CRITICAL<BR>(OS, OTHER) | HIGH<BR>(OS, OTHER) | MEDIUM<BR>(OS, OTHER) | LOW<BR>(OS, OTHER) | UNKNOWN<BR>(OS, OTHER) |
+|---------------------------------------------------------------------------------------------------------------------|------------------|-------------------------|---------------------|-----------------------|--------------------|------------------------|
+| ghcr.io/appscode/inbox-agent:v0.0.1<br>sha256:cd9ecde82acdfd5d1551444284fba291e4036a623c6b59818ee6a369b37da79e      | alpine 3.20.3    | 0, 0                    | 0, 0                | 0, 0                  | 2, 0               | 0, 0                   |
+| ghcr.io/appscode/kube-rbac-proxy:v0.11.0<br>sha256:0df4ae70e3bd0feffcec8f5cdb428f4abe666b667af991269ec5cb0bbda65869 | debian 10.10     | 0, 4                    | 0, 51               | 0, 33                 | 0, 1               | 6, 0                   |
+| opensearchproject/opensearch:2.1.0<br>sha256:4254021a8c7130aaed09bffc61ef654bc15b958fefb30c09be1d24956f9f8ed1       | amazon 2 (Karoo) | **11**, 3               | **258**, 54         | 180, 57               | 33, 10             | 0, 0                   |
+| rabbitmq:3.12.1-management<br>sha256:f020c06da2267ea69d954e0fde86276dad1b1788819d12ccb892e0f26bfe242a               | ubuntu 22.04     | 0, 0                    | **2**, 0            | 91, 0                 | 40, 0              | 0, 0                   |
