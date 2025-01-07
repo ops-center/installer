@@ -99,6 +99,8 @@ type InboxServerInfo struct {
 	JMAPSessionEndpoint string `json:"jmapSessionEndpoint"`
 	WebadminEndpoint    string `json:"webadminEndpoint"`
 	Token               string `json:"token"`
+	// +optional
+	CABundle string `json:"caBundle"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

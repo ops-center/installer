@@ -137,6 +137,7 @@ monitoring:
     labels: {}
 
 inboxServer:
-  jmapSessionEndpoint: ""
-  webadminEndpoint: ""
-  token: ""
+  jmapSessionEndpoint: "xyz"
+  webadminEndpoint: "xyz"
+  token: "xyz"
+  caBundle: "xyz"
