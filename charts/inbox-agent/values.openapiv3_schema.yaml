@@ -979,6 +979,8 @@ properties:
     type: array
   inboxServer:
     properties:
+      caBundle:
+        type: string
       jmapSessionEndpoint:
         type: string
       token:

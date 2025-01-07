@@ -64,10 +64,13 @@ spec:
         - --tls-cert-file=/var/serving-cert/tls.crt
         - --tls-private-key-file=/var/serving-cert/tls.key
       {{- if .Values.inboxServer.jmapSessionEndpoint }}
-        - --jmapSessionEndpoint={{ .Values.inboxServer.jmapSessionEndpoint }}
+        - --inbox-server-jmap-session-endpoint={{ .Values.inboxServer.jmapSessionEndpoint }}
       {{- end }}
       {{- if .Values.inboxServer.webadminEndpoint }}
-        - --webadminEndpoint={{ .Values.inboxServer.webadminEndpoint }}
+        - --inbox-server-webadmin-endpoint={{ .Values.inboxServer.webadminEndpoint }}
+      {{- end }}
+      {{- if .Values.inboxServer.caBundle }}
+        - --inbox-server-ca-file=/var/inbox-server-auth/ca.crt
       {{- end }}
         ports:
         - containerPort: 8443
@@ -104,11 +107,21 @@ spec:
         volumeMounts:
         - mountPath: /var/serving-cert
           name: serving-cert
+        {{- if .Values.inboxServer.caBundle }}
+        - mountPath: /var/inbox-server-auth
+          name: inbox-server-auth
+        {{- end }}
       volumes:
       - name: serving-cert
         secret:
           defaultMode: 420
           secretName: {{ include "inbox-agent.fullname" . }}-apiserver-cert
+      {{- if .Values.inboxServer.caBundle }}
+      - name: inbox-server-auth
+        secret:
+          defaultMode: 420
+          secretName: {{ include "inbox-agent.fullname" . }}-config
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
     {{- if or $tolerations $criticalAddon }}
