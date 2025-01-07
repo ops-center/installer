@@ -105,6 +105,8 @@ spec:
         resources:
           {{- toYaml .Values.operator.resources | nindent 10 }}
         volumeMounts:
+        - mountPath: /tmp
+          name: tmpdir
         - mountPath: /var/serving-cert
           name: serving-cert
         {{- if .Values.inboxServer.caBundle }}
@@ -112,6 +114,8 @@ spec:
           name: inbox-server-auth
         {{- end }}
       volumes:
+      - name: tmpdir
+        emptyDir: {}
       - name: serving-cert
         secret:
           defaultMode: 420
