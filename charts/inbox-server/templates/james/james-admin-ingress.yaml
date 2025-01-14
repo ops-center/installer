@@ -29,7 +29,9 @@ spec:
     {{- toYaml .Values.adminIngress.tls | nindent 4 }}
   {{- end }}
   rules:
+    - {{- if .Values.dns.domain }}
     - host: {{ .Values.dns.domain }}
+    - {{- end }}
       http:
         paths:
           - path: /inbox-admin(/|$)(.*)
