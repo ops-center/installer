@@ -47,8 +47,8 @@ The following table lists the configurable parameters of the `inbox-server` char
 
 |                 Parameter                 |                                                               Description                                                               |                      Default                      |
 |-------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
-| dns.domain                                | # Default domain for all emailing components jmapUrl: "jmap.example.com" adminUrl: "admin.example.com" smtpHostname: "smtp.example.com" | <code>"example.com"</code>                        |
-| dns.emailDomain                           | in ip mode, the emailDomain is ace.internal, otherwise same as domain                                                                   | <code>"example.com"</code>                        |
+| dns.domain                                | # Default domain for all emailing components jmapUrl: "jmap.example.com" adminUrl: "admin.example.com" smtpHostname: "smtp.example.com" | <code>""</code>                                   |
+| dns.emailDomain                           | in ip mode, the emailDomain is ace.internal, otherwise same as domain                                                                   | <code>""</code>                                   |
 | dns.targetIPs                             |                                                                                                                                         | <code>[]</code>                                   |
 | james.replicaJmapInstanceCount            |                                                                                                                                         | <code>1</code>                                    |
 | james.replicaImapSmtpInstanceCount        |                                                                                                                                         | <code>0</code>                                    |
@@ -133,7 +133,7 @@ The following table lists the configurable parameters of the `inbox-server` char
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm upgrade -i`. For example:
 
 ```bash
-$ helm upgrade -i inbox-server appscode/inbox-server -n monitoring --create-namespace --version=v2024.5.3 --set dns.domain="example.com"
+$ helm upgrade -i inbox-server appscode/inbox-server -n monitoring --create-namespace --version=v2024.5.3 --set james.replicaJmapInstanceCount=1
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
