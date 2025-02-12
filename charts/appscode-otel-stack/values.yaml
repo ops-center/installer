@@ -1,0 +1,301 @@
+# Default values for appscode-otel-stack.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+clickhouse:
+  enabled: true
+
+  # Global ClickHouse version and deletion policy
+  version: 24.4.1
+  deletionPolicy: WipeOut
+
+  deploymentMode: standalone
+  # Option to enable cluster mode.
+  # Set to true to deploy a clustered ClickHouse instance; false will deploy a standalone instance.
+  clusterEnabled: false
+
+  # Standalone deployment storage settings
+  storage:
+    storageClassName: ""
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+
+  # Cluster deployment settings (used only if clusterEnabled is true)
+  clusterTopology:
+    clickHouseKeeper:
+      externallyManaged: false
+      replicas: 1
+      storage:
+        storageClassName: ""
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
+    # Note: The spec.cluster section is an array with a maximum of one item.
+    cluster:
+      name: cluster
+      shards: 2
+      replicas: 2
+      podTemplate:
+        spec:
+          containers:
+            - name: clickhouse
+              resources:
+                limits:
+                  memory: 4Gi
+                requests:
+                  cpu: 500m
+                  memory: 2Gi
+          initContainers:
+            - name: clickhouse-init
+              resources:
+                limits:
+                  memory: 1Gi
+                requests:
+                  cpu: 500m
+                  memory: 1Gi
+      storage:
+        storageClassName: ""
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
+
+
+opentelemetry-kube-stack:
+  enabled: true
+  clusterName: ""
+  collectors:
+    cluster:
+      config:
+        exporters:
+          clickhouse:
+            database: otel
+            endpoint: tcp://opentelemetry-kube-stack-clickhouse:9000
+            logs_table_name: otel_logs
+            password: ${CLICKHOUSE_PASSWORD}
+            retry_on_failure:
+              enabled: true
+              initial_interval: 5s
+              max_elapsed_time: 300s
+              max_interval: 30s
+            sending_queue:
+              queue_size: 100
+            timeout: 10s
+            ttl: 0
+            username: ${CLICKHOUSE_USERNAME}
+          otlphttp/prometheus:
+            endpoint: http://kube-prometheus-stack-prometheus:9090/api/v1/otlp
+            tls:
+              insecure: true
+        receivers:
+          otlp:
+            protocols:
+              grpc:
+                endpoint: 0.0.0.0:4317
+              http:
+                endpoint: 0.0.0.0:4318
+        service:
+          pipelines:
+            logs:
+              exporters:
+                - clickhouse
+              receivers:
+                - otlp
+                - k8sobjects
+            metrics:
+              exporters:
+                - otlphttp/prometheus
+              receivers:
+                - otlp
+      enabled: true
+      env:
+        - name: CLICKHOUSE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: opentelemetry-kube-stack-clickhouse-auth
+        - name: CLICKHOUSE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: opentelemetry-kube-stack-clickhouse-auth
+      image:
+        repository: otel/opentelemetry-collector-contrib
+        tag: 0.95.0
+      labels:
+        otel-collector-type: deployment
+      presets:
+        clusterMetrics:
+          enabled: false
+      suffix: gateway
+    daemon:
+      config:
+        exporters:
+          otlp:
+            endpoint: opentelemetry-kube-stack-gateway-collector:4317
+            tls:
+              insecure: true
+        service:
+          pipelines:
+            logs:
+              exporters:
+                - otlp
+            metrics:
+              exporters:
+                - otlp
+              receivers:
+                - prometheus
+      enabled: true
+      labels:
+        otel-collector-type: daemonset
+      presets:
+        hostMetrics:
+          enabled: false
+        kubeletMetrics:
+          enabled: false
+        kubernetesAttributes:
+          enabled: false
+        logsCollection:
+          enabled: true
+      scrape_configs_file: config/kubelet_scrape_configs.yaml
+      suffix: agent
+      targetAllocator:
+        allocationStrategy: per-node
+        enabled: true
+        image: ghcr.io/open-telemetry/opentelemetry-operator/target-allocator:main
+        prometheusCR:
+          enabled: true
+          podMonitorSelector: {}
+          scrapeInterval: 30s
+          serviceMonitorSelector: {}
+  instrumentation:
+    enabled: false
+  kubeApiServer:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeDns:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeStateMetrics:
+    enabled: true
+  kubelet:
+    enabled: false
+  kubernetesServiceMonitors:
+    enabled: true
+  nodeExporter:
+    enabled: true
+  opAMPBridge:
+    enabled: false
+
+
+kube-prometheus-stack:
+  enabled: true
+  alertmanager:
+    alertmanagerSpec:
+      image:
+        registry: 0.1.acdc.appscode.ninja/quay
+  grafana:
+    downloadDashboardsImage:
+      repository: 0.1.acdc.appscode.ninja/docker/curlimages/curl
+    enabled: false
+    image:
+      repository: 0.1.acdc.appscode.ninja/docker/grafana/grafana
+    imageRenderer:
+      image:
+        repository: 0.1.acdc.appscode.ninja/docker/grafana/grafana-image-renderer
+    initChownData:
+      image:
+        repository: 0.1.acdc.appscode.ninja/docker/busybox
+    sidecar:
+      image:
+        repository: 0.1.acdc.appscode.ninja/quay/kiwigrid/k8s-sidecar
+    testFramework:
+      image: 0.1.acdc.appscode.ninja/docker/bats/bats:1.11.0
+  prometheus:
+    prometheusSpec:
+      additionalArgs:
+        - name: web.enable-otlp-receiver
+          value: ""
+      image:
+        registry: 0.1.acdc.appscode.ninja/quay
+      serviceMonitorSelector:
+        matchLabels:
+          scrape: disabled
+      serviceMonitorSelectorNilUsesHelmValues: true
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 50Gi
+  prometheus-node-exporter:
+    image:
+      registry: 0.1.acdc.appscode.ninja/quay
+    prometheus:
+      monitor:
+        relabelings:
+          - action: replace
+            regex: ^(.*)$
+            replacement: $1
+            separator: ;
+            sourceLabels:
+              - __meta_kubernetes_pod_node_name
+            targetLabel: node
+    tolerations:
+      - operator: Exists
+  prometheusOperator:
+    admissionWebhooks:
+      patch:
+        image:
+          registry: 0.1.acdc.appscode.ninja/k8s
+    image:
+      registry: 0.1.acdc.appscode.ninja/quay
+    prometheusConfigReloader:
+      image:
+        registry: 0.1.acdc.appscode.ninja/quay
+    thanosImage:
+      registry: 0.1.acdc.appscode.ninja/quay
+  thanosRuler:
+    thanosRulerSpec:
+      image:
+        registry: 0.1.acdc.appscode.ninja/quay
+  kubernetesServiceMonitors:
+    enabled: false
+  kubeApiServer:
+    enabled: false
+  kubelet:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  kubeDns:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  nodeExporter:
+    enabled: false
