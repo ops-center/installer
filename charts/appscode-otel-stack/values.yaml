@@ -12,11 +12,7 @@ clickhouse:
   # Global ClickHouse version and deletion policy
   version: 24.4.1
   deletionPolicy: WipeOut
-
   deploymentMode: standalone
-  # Option to enable cluster mode.
-  # Set to true to deploy a clustered ClickHouse instance; false will deploy a standalone instance.
-  clusterEnabled: false
 
   # Standalone deployment storage settings
   storage:
@@ -27,7 +23,7 @@ clickhouse:
       requests:
         storage: 1Gi
 
-  # Cluster deployment settings (used only if clusterEnabled is true)
+  # Cluster deployment settings
   clusterTopology:
     clickHouseKeeper:
       externallyManaged: false
@@ -74,6 +70,7 @@ clickhouse:
 
 
 opentelemetry-kube-stack:
+  nameOverride: "appscode-otel-stack"
   enabled: true
   clusterName: ""
   collectors:
@@ -82,7 +79,7 @@ opentelemetry-kube-stack:
         exporters:
           clickhouse:
             database: otel
-            endpoint: tcp://opentelemetry-kube-stack-clickhouse:9000
+            endpoint: tcp://appscode-otel-stack-clickhouse:9000
             logs_table_name: otel_logs
             password: ${CLICKHOUSE_PASSWORD}
             retry_on_failure:
@@ -96,7 +93,7 @@ opentelemetry-kube-stack:
             ttl: 0
             username: ${CLICKHOUSE_USERNAME}
           otlphttp/prometheus:
-            endpoint: http://kube-prometheus-stack-prometheus:9090/api/v1/otlp
+            endpoint: http://appscode-otel-stack-prometheus:9090/api/v1/otlp
             tls:
               insecure: true
         receivers:
@@ -125,12 +122,12 @@ opentelemetry-kube-stack:
           valueFrom:
             secretKeyRef:
               key: username
-              name: opentelemetry-kube-stack-clickhouse-auth
+              name: appscode-otel-stack-clickhouse-auth
         - name: CLICKHOUSE_PASSWORD
           valueFrom:
             secretKeyRef:
               key: password
-              name: opentelemetry-kube-stack-clickhouse-auth
+              name: appscode-otel-stack-clickhouse-auth
       image:
         repository: otel/opentelemetry-collector-contrib
         tag: 0.95.0
@@ -144,7 +141,7 @@ opentelemetry-kube-stack:
       config:
         exporters:
           otlp:
-            endpoint: opentelemetry-kube-stack-gateway-collector:4317
+            endpoint: appscode-otel-stack-gateway-collector:4317
             tls:
               insecure: true
         service:
@@ -207,6 +204,7 @@ opentelemetry-kube-stack:
 
 
 kube-prometheus-stack:
+  nameOverride: "appscode-otel-stack"
   enabled: true
   alertmanager:
     alertmanagerSpec:

@@ -12,11 +12,11 @@ maintainers:
 - name: appscode
   email: support@appscode.com
 dependencies:
-- name: opentelemetry-kube-stack
-  repository: oci://ghcr.io/appscode-charts
-  condition: opentelemetry-kube-stack.enabled
-  version: 0.3.13
 - name: kube-prometheus-stack
   repository: oci://ghcr.io/appscode-charts
   condition: kube-prometheus-stack.enabled
   version: 69.2.2
+- name: opentelemetry-kube-stack
+  repository: oci://ghcr.io/appscode-charts
+  condition: opentelemetry-kube-stack.enabled
+  version: 0.3.13
