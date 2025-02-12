@@ -1,0 +1,9 @@
+dependencies:
+- name: opentelemetry-kube-stack
+  repository: oci://ghcr.io/appscode-charts
+  version: 0.3.13
+- name: kube-prometheus-stack
+  repository: oci://ghcr.io/appscode-charts
+  version: 69.2.2
+digest: sha256:95bc796a0463cd0df4bef285c09c3effd996ba4b58e7f16fe6f53e8a7dfb3f9e
+generated: "2025-02-11T19:31:00.603025-08:00"
