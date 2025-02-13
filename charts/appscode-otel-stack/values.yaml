@@ -206,34 +206,13 @@ opentelemetry-kube-stack:
 kube-prometheus-stack:
   nameOverride: "appscode-otel-stack"
   enabled: true
-  alertmanager:
-    alertmanagerSpec:
-      image:
-        registry: 0.1.acdc.appscode.ninja/quay
   grafana:
-    downloadDashboardsImage:
-      repository: 0.1.acdc.appscode.ninja/docker/curlimages/curl
     enabled: false
-    image:
-      repository: 0.1.acdc.appscode.ninja/docker/grafana/grafana
-    imageRenderer:
-      image:
-        repository: 0.1.acdc.appscode.ninja/docker/grafana/grafana-image-renderer
-    initChownData:
-      image:
-        repository: 0.1.acdc.appscode.ninja/docker/busybox
-    sidecar:
-      image:
-        repository: 0.1.acdc.appscode.ninja/quay/kiwigrid/k8s-sidecar
-    testFramework:
-      image: 0.1.acdc.appscode.ninja/docker/bats/bats:1.11.0
   prometheus:
     prometheusSpec:
       additionalArgs:
         - name: web.enable-otlp-receiver
           value: ""
-      image:
-        registry: 0.1.acdc.appscode.ninja/quay
       serviceMonitorSelector:
         matchLabels:
           scrape: disabled
@@ -247,8 +226,6 @@ kube-prometheus-stack:
               requests:
                 storage: 50Gi
   prometheus-node-exporter:
-    image:
-      registry: 0.1.acdc.appscode.ninja/quay
     prometheus:
       monitor:
         relabelings:
@@ -261,22 +238,6 @@ kube-prometheus-stack:
             targetLabel: node
     tolerations:
       - operator: Exists
-  prometheusOperator:
-    admissionWebhooks:
-      patch:
-        image:
-          registry: 0.1.acdc.appscode.ninja/k8s
-    image:
-      registry: 0.1.acdc.appscode.ninja/quay
-    prometheusConfigReloader:
-      image:
-        registry: 0.1.acdc.appscode.ninja/quay
-    thanosImage:
-      registry: 0.1.acdc.appscode.ninja/quay
-  thanosRuler:
-    thanosRulerSpec:
-      image:
-        registry: 0.1.acdc.appscode.ninja/quay
   kubernetesServiceMonitors:
     enabled: false
   kubeApiServer:
