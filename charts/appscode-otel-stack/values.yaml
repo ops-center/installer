@@ -8,12 +8,10 @@ fullnameOverride: ""
 
 clickhouse:
   enabled: true
-
   # Global ClickHouse version and deletion policy
   version: 24.4.1
   deletionPolicy: WipeOut
   deploymentMode: standalone
-
   # Standalone deployment storage settings
   storage:
     storageClassName: ""
@@ -22,7 +20,6 @@ clickhouse:
     resources:
       requests:
         storage: 1Gi
-
   # Cluster deployment settings
   clusterTopology:
     clickHouseKeeper:
@@ -35,7 +32,6 @@ clickhouse:
         resources:
           requests:
             storage: 1Gi
-
     # Note: The spec.cluster section is an array with a maximum of one item.
     cluster:
       name: cluster
@@ -66,8 +62,6 @@ clickhouse:
         resources:
           requests:
             storage: 1Gi
-
-
 
 opentelemetry-kube-stack:
   nameOverride: "appscode-otel-stack"
@@ -201,7 +195,6 @@ opentelemetry-kube-stack:
     enabled: true
   opAMPBridge:
     enabled: false
-
 
 kube-prometheus-stack:
   nameOverride: "appscode-otel-stack"

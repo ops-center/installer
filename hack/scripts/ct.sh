@@ -22,7 +22,7 @@ for dir in charts/*/; do
     num_files=$(find charts/${dir}/templates -type f | wc -l)
     echo $dir
     if [ $num_files -le 1 ] ||
-        [[ "$dir" = "cluster-connector" ]]; then
+        [[ "$dir" = "appscode-otel-stack" ]]; then
         make ct CT_COMMAND=lint TEST_CHARTS=charts/$dir
     elif [[ "$dir" = "cert-manager-csi-driver-cacerts" ]]; then
         ns=app-$(date +%s | head -c 6)
