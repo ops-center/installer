@@ -1,5 +1,3 @@
-{{- $opensearchUrl := include "opensearch.url.list" . }}
-{{- $cassandraUrl := include "cassandra.url.list" . }}
 {{- $jamesOpts := include "inbox-server-lite.jvmOpts" . }}
 apiVersion: apps/v1
 kind: Deployment
@@ -66,40 +64,8 @@ spec:
           value: "false"
         - name: JAMES_JMAP_ENABLED
           value: "true"
-        - name: JAMES_CASSANDRA_NODES_URLS
-          value: "{{ $cassandraUrl | trimSuffix "," }}"
-        - name: JAMES_CASSANDRA_REPLICATION_FACTOR
-          value: "{{ .Values.james.env.cassandraReplicationFactor }}"
         - name: JAMES_KEYSTORE_PASSWORD
           value: "{{ .Values.james.env.jamesKeyStorePassword }}"
-        - name: JAMES_CASSANDRA_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-cassandra-auth
-              key: username
-        - name: JAMES_CASSANDRA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-cassandra-auth
-              key: password
-        - name: JAMES_ES_NODES_URLS
-          value: "{{ $opensearchUrl | trimSuffix "," }}"
-        - name: JAMES_AMQP_HOST
-          value: {{ .Values.james.env.jamesRabbitHost }}
-        - name: JAMES_AMQP_PORT
-          value: "5672"
-        - name: JAMES_AMQP_MANAGEMENT_PORT
-          value: "15672"
-        - name: JAMES_AMQP_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-rabbitmq-auth
-              key: username
-        - name: JAMES_AMQP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-rabbitmq-auth
-              key: password
         - name: JAMES_DKIM_SIGN_SMTP
           value: {{ .Values.james.env.jamesDkimSignSmtp }}
         - name: JAMES_DKIM_SIGN_DOMAIN
@@ -115,18 +81,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        {{- if and (.Values.opensearch.secret.username) (.Values.opensearch.secret.password) }}
-        - name: JAMES_ES_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-openssearch-auth
-              key: username
-        - name: JAMES_ES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-openssearch-auth
-              key: password
-        {{- end }}
         {{ if .Values.dns.domain }}
         - name: JAMES_SERVER_DOMAIN
           value: "{{ .Values.dns.domain }}"
@@ -140,30 +94,6 @@ spec:
           value: "smtp.{{ .Values.dns.emailDomain }}"
         - name: JAMES_SMTP_MESSAGE
           value: "{{ .Values.james.env.jamesHELOMessage }}"
-        - name: JAMES_CASSANDRA_KEYSPACE
-          value: {{ .Values.james.env.jamesCassandraKeyspace }}
-        - name: JAMES_CASSANDRA_CACHE_KEYSPACE
-          value: {{ .Values.james.env.jamesCassandraCacheKeyspace }}
-        - name: JAMES_BUCKET_SUFFIX
-          value: "{{ .Values.s3.bucketNameSuffix }}"
-        - name: JAMES_ES_MAILBOX_INDEX
-          value: {{ .Values.james.env.jamesEsMailboxIndex }}
-        - name: JAMES_ES_CLUSTER_NAME
-          value: {{ .Values.james.env.jamesEsClusterName }}
-        - name: JAMES_ES_HOST_SCHEME
-          value: {{ .Values.james.env.jamesEsHostScheme }}
-        - name: JAMES_ES_SSL_VALIDATION_STRATEGY
-          value: {{ .Values.james.env.jamesEsSslValidationStrategy }}
-        - name: JAMES_ES_HOST_NAME_VERIFIER
-          value: {{ .Values.james.env.jamesEsHostNameVerifier }}
-        - name: JAMES_ES_NB_SHARDS
-          value: "{{ .Values.james.env.jamesEsNbShards }}"
-        - name: JAMES_ES_NB_REPLICA
-          value: "{{ .Values.james.env.jamesEsNbReplica }}"
-        - name: JAMES_ES_MAILBOX_READ_ALIAS
-          value: "{{ .Values.james.env.jamesEsMailboxReadAlias }}"
-        - name: JAMES_ES_MAILBOX_READ_WRITE
-          value: "{{ .Values.james.env.jamesEsMailboxWriteAlias }}"
         - name: JAMES_MESSAGE_SIZE
           value: "{{ .Values.james.env.jamesMessageSize }}"
         - name: JAVA_TOOL_OPTIONS
@@ -274,38 +204,6 @@ spec:
           value: "true"
         - name: JAMES_JMAP_ENABLED
           value: "false"
-        - name: JAMES_CASSANDRA_NODES_URLS
-          value: "{{ $cassandraUrl | trimSuffix "," }}"
-        - name: JAMES_CASSANDRA_REPLICATION_FACTOR
-          value: "{{ .Values.james.env.cassandraReplicationFactor }}"
-        - name: JAMES_CASSANDRA_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-cassandra-auth
-              key: username
-        - name: JAMES_CASSANDRA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-cassandra-auth
-              key: password
-        - name: JAMES_ES_NODES_URLS
-          value: "{{ $opensearchUrl | trimSuffix "," }}"
-        - name: JAMES_AMQP_HOST
-          value: {{ .Values.james.env.jamesRabbitHost }}
-        - name: JAMES_AMQP_PORT
-          value: "5672"
-        - name: JAMES_AMQP_MANAGEMENT_PORT
-          value: "15672"
-        - name: JAMES_AMQP_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-rabbitmq-auth
-              key: username
-        - name: JAMES_AMQP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-rabbitmq-auth
-              key: password
         - name: JAMES_DKIM_SIGN_SMTP
           value: {{ .Values.james.env.jamesDkimSignSmtp }}
         - name: JAMES_DKIM_SIGN_DOMAIN
@@ -321,18 +219,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        {{- if and (.Values.opensearch.secret.username) (.Values.opensearch.secret.password) }}
-        - name: JAMES_ES_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-openssearch-auth
-              key: username
-        - name: JAMES_ES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "inbox-server-lite.fullname" . }}-openssearch-auth
-              key: password
-        {{- end }}
         {{ if .Values.dns.domain }}
         - name: JAMES_SERVER_DOMAIN
           value: "{{ .Values.dns.domain }}"
@@ -346,30 +232,6 @@ spec:
           value: "smtp.{{ .Values.dns.emailDomain }}"
         - name: JAMES_SMTP_MESSAGE
           value: "{{ .Values.james.env.jamesHELOMessage }}"
-        - name: JAMES_CASSANDRA_KEYSPACE
-          value: {{ .Values.james.env.jamesCassandraKeyspace }}
-        - name: JAMES_CASSANDRA_CACHE_KEYSPACE
-          value: {{ .Values.james.env.jamesCassandraCacheKeyspace }}
-        - name: JAMES_BUCKET_SUFFIX
-          value: "{{ .Values.s3.bucketNameSuffix }}"
-        - name: JAMES_ES_MAILBOX_INDEX
-          value: {{ .Values.james.env.jamesEsMailboxIndex }}
-        - name: JAMES_ES_CLUSTER_NAME
-          value: {{ .Values.james.env.jamesEsClusterName }}
-        - name: JAMES_ES_HOST_SCHEME
-          value: {{ .Values.james.env.jamesEsHostScheme }}
-        - name: JAMES_ES_SSL_VALIDATION_STRATEGY
-          value: {{ .Values.james.env.jamesEsSslValidationStrategy }}
-        - name: JAMES_ES_HOST_NAME_VERIFIER
-          value: {{ .Values.james.env.jamesEsHostNameVerifier }}
-        - name: JAMES_ES_NB_SHARDS
-          value: "{{ .Values.james.env.jamesEsNbShards }}"
-        - name: JAMES_ES_NB_REPLICA
-          value: "{{ .Values.james.env.jamesEsNbReplica }}"
-        - name: JAMES_ES_MAILBOX_READ_ALIAS
-          value: "{{ .Values.james.env.jamesEsMailboxReadAlias }}"
-        - name: JAMES_ES_MAILBOX_READ_WRITE
-          value: "{{ .Values.james.env.jamesEsMailboxWriteAlias }}"
         - name: JAMES_MESSAGE_SIZE
           value: "{{ .Values.james.env.jamesMessageSize }}"
         - name: JAVA_TOOL_OPTIONS

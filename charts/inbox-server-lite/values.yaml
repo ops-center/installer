@@ -15,22 +15,9 @@ james:
   image: ghcr.io/appscode/inbox-server:postgres-latest
   ## Environment for James
   env:
-    jamesCassandraKeyspace: sandbox_james
-    jamesCassandraCacheKeyspace: sandbox_james_cache
-    jamesEsMailboxIndex: "mailbox_v1"
-    jamesEsClusterName: "change-me"
-    jamesEsHostScheme: "http"
-    jamesEsSslValidationStrategy: "default"
-    jamesEsHostNameVerifier: "default"
-    jamesEsNbShards: 5
-    jamesEsNbReplica: 1
-    jamesEsMailboxReadAlias: "read-mailbox"
-    jamesEsMailboxWriteAlias: "write-mailbox"
-    jamesRabbitHost: "inbox-server-rabbitmq"
     jamesMessageSize: 25M
     jamesDkimSignSmtp: "dkimselector"
     jamesDkimSignDomain: "mail.example.com"
-    cassandraReplicationFactor: 1
     jamesKeyStorePassword: james72laBalle
     jamesHELOMessage: "change-me"
     jvmOpts: "-Xms3g -Xmx3g"
@@ -79,6 +66,10 @@ adminIngress:
 postgresql:
   ## @param postgresql.enabled enable the bitnami/postgresql subchart and deploy Postgres
   enabled: true
+  # auth:
+  #   username: "james"
+  #   password: "secret1"
+  #   database: "james"
 
 #-------------------
 

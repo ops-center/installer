@@ -31,32 +31,29 @@
 
     <spooler>
         <threads>20</threads>
-        <errorRepository>cassandra://var/mail/error/</errorRepository>
+        <errorRepository>postgres://var/mail/error/</errorRepository>
     </spooler>
 
     <processors>
         <processor state="root" enableJmx="true">
             <mailet match="All" class="PostmasterAlias"/>
-            <mailet match="RelayLimit=30" class="Null"/>
-            <mailet match="All" class="mailets.IgnoreSuffixOfPlusSign"/>
+            <mailet match="RelayLimit=30" class="ToRepository">
+                <repositoryPath>postgres://var/mail/relay-limit-exceeded/</repositoryPath>
+            </mailet>
             <mailet match="All" class="ToProcessor">
                 <processor>transport</processor>
             </mailet>
         </processor>
 
-
         <processor state="error" enableJmx="true">
-            <matcher name="not-reprocessed" match="org.apache.james.mailetcontainer.impl.matchers.Not">
-                <matcher match="HasMailAttribute=mailRepository-reprocessing"/>
-            </matcher>
             <mailet match="All" class="MetricsMailet">
                 <metricName>mailetContainerErrors</metricName>
             </mailet>
-            <mailet match="not-reprocessed" class="Bounce">
+            <mailet match="All" class="Bounce">
                 <onMailetException>ignore</onMailetException>
             </mailet>
             <mailet match="All" class="ToRepository">
-                <repositoryPath>cassandra://var/mail/error/</repositoryPath>
+                <repositoryPath>postgres://var/mail/error/</repositoryPath>
                 <onMailetException>propagate</onMailetException>
             </mailet>
         </processor>
@@ -73,36 +70,31 @@
                 <name>bcc</name>
                 <onMailetException>ignore</onMailetException>
             </mailet>
+            <mailet match="All" class="RemoveMimeHeader">
+                <name>X-SMIME-Status</name>
+                <onMailetException>ignore</onMailetException>
+            </mailet>
             <mailet match="All" class="RecipientRewriteTable">
                 <errorProcessor>rrt-error</errorProcessor>
             </mailet>
-            <mailet match="RecipientIsLocal" class="ToProcessor">
-                <processor>local-delivery</processor>
+            <mailet match="RecipientIsLocal" class="VacationMailet">
+                <onMailetException>ignore</onMailetException>
             </mailet>
+            <mailet match="RecipientIsLocal" class="org.apache.james.jmap.mailet.filter.JMAPFiltering">
+                <onMailetException>ignore</onMailetException>
+            </mailet>
+
+            <mailet match="RecipientIsLocal" class="Sieve"/>
+            <mailet match="RecipientIsLocal" class="AddDeliveredToHeader"/>
+            <mailet match="RecipientIsLocal" class="LocalDelivery"/>
             <mailet match="HostIsLocal" class="ToProcessor">
                 <processor>local-address-error</processor>
                 <notice>550 - Requested action not taken: no such user here</notice>
             </mailet>
+
             <mailet match="relay-allowed" class="ToProcessor">
                 <processor>relay</processor>
             </mailet>
-            <mailet match="All" class="ToProcessor">
-                <processor>relay-denied</processor>
-            </mailet>
-        </processor>
-
-        <processor state="local-delivery" enableJmx="true">
-            <mailet match="All" class="VacationMailet">
-                <onMailetException>ignore</onMailetException>
-            </mailet>
-            <mailet match="All" class="Sieve">
-                <onMailetException>ignore</onMailetException>
-            </mailet>
-            <mailet match="All" class="AddDeliveredToHeader"/>
-            <mailet match="All" class="org.apache.james.jmap.mailet.filter.JMAPFiltering">
-                <onMailetException>ignore</onMailetException>
-            </mailet>
-            <mailet match="All" class="LocalDelivery"/>
         </processor>
 
         <processor state="relay" enableJmx="true">
@@ -125,7 +117,7 @@
                 <attachment>none</attachment>
             </mailet>
             <mailet match="All" class="ToRepository">
-                <repositoryPath>cassandra://var/mail/address-error/</repositoryPath>
+                <repositoryPath>postgres://var/mail/address-error/</repositoryPath>
             </mailet>
         </processor>
 
@@ -137,7 +129,7 @@
                 <attachment>none</attachment>
             </mailet>
             <mailet match="All" class="ToRepository">
-                <repositoryPath>cassandra://var/mail/relay-denied/</repositoryPath>
+                <repositoryPath>postgres://var/mail/relay-denied/</repositoryPath>
                 <notice>Warning: You are sending an e-mail to a remote server. You must be authenticated to perform such an operation</notice>
             </mailet>
         </processor>
@@ -153,7 +145,7 @@
 
         <processor state="rrt-error" enableJmx="false">
             <mailet match="All" class="ToRepository">
-                <repositoryPath>cassandra://var/mail/rrt-error/</repositoryPath>
+                <repositoryPath>postgres://var/mail/rrt-error/</repositoryPath>
                 <passThrough>true</passThrough>
             </mailet>
             <mailet match="IsSenderInRRTLoop" class="Null"/>

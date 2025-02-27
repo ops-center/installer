@@ -21,6 +21,7 @@ under the License.
 
 <!-- Read https://james.apache.org/server/config-imap4.html for further details -->
 
+
 <imapservers>
     <imapserver enabled="true">
         <jmxName>imapserver</jmxName>
@@ -46,7 +47,7 @@ under the License.
         <idleTimeInterval>120</idleTimeInterval>
         <idleTimeIntervalUnit>SECONDS</idleTimeIntervalUnit>
         <enableIdle>true</enableIdle>
-        <plainAuthDisallowed>true</plainAuthDisallowed>
+        <plainAuthDisallowed>false</plainAuthDisallowed>
         <auth>
             <plainAuthEnabled>true</plainAuthEnabled>
         </auth>
