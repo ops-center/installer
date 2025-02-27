@@ -19,4 +19,4 @@ set -e
 helm repo add appscode https://charts.appscode.com/stable/ || true
 
 helm dependency update charts/appscode-otel-stack
-helm dependency update charts/inbox-server-lite
+helm dependency update charts/inbox-server
