@@ -1,0 +1,75 @@
+dns:
+  ## Default domain for all emailing components
+  # jmapUrl: "jmap.example.com"
+  # adminUrl: "admin.example.com"
+  # smtpHostname: "smtp.example.com"
+  domain: ""
+  # in ip mode, the emailDomain is ace.internal, otherwise same as domain
+  emailDomain: ""
+  targetIPs: []
+
+# Default values for james
+james:
+  replicaJmapInstanceCount: 1
+  replicaImapSmtpInstanceCount: 0
+  image: ghcr.io/appscode/inbox-server:postgres-latest
+  ## Environment for James
+  env:
+    jamesMessageSize: 25M
+    jamesDkimSignSmtp: "dkimselector"
+    jamesDkimSignDomain: "mail.example.com"
+    jamesKeyStorePassword: james72laBalle
+    jamesHELOMessage: "change-me"
+    jvmOpts: "-Xms3g -Xmx3g"
+    glowroot:
+      enabled: false
+    jamesResources:
+      limits:
+        cpu: "2000m"
+        memory: "4Gi"
+      requests:
+        cpu: "1000m"
+        memory: "4Gi"
+  tls:
+    # secretName: the-name-of-a-secret
+    secretName: ""
+
+# Requires Prometheus Operator to be installed
+serviceMonitor:
+  enabled: false
+  # Labels for Prometheus Operator to detect ServiceMonitor. Cannot be empty 
+  additionalLabels:
+    change-me: change-me
+  # Scrape interval. Use Prometheus default value if not specified
+  interval: 30s
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
+  tls:
+    secretName: the-name-of-a-secret
+
+adminIngress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
+  tls:
+      secretName: the-name-of-a-secret
+
+postgresql:
+  ## @param postgresql.enabled enable the bitnami/postgresql subchart and deploy Postgres
+  enabled: true
+  # auth:
+  #   secretName: ""
+  #   username: "james"
+  #   password: "secret1"
+  #   database: "james"
+  # external:
+  #   addr: ""
