@@ -28,6 +28,8 @@ import (
 func TestDefaultValues(t *testing.T) {
 	checker := schemachecker.New(os.DirFS("../../.."),
 		schemachecker.TestCase{Obj: v1alpha1.InboxAgentSpec{}},
+		schemachecker.TestCase{Obj: v1alpha1.InboxServerSpec{}},
+		schemachecker.TestCase{Obj: v1alpha1.InboxServerDistributedSpec{}},
 	)
 	checker.TestAll(t)
 }

@@ -58,6 +58,8 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		&InboxAgentList{},
 		&InboxServer{},
 		&InboxServerList{},
+		&InboxServerDistributed{},
+		&InboxServerDistributedList{},
 	)
 
 	scheme.AddKnownTypes(SchemeGroupVersion,
