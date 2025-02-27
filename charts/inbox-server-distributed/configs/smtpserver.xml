@@ -83,6 +83,9 @@
         <connectiontimeout>360</connectiontimeout>
         <connectionLimit>0</connectionLimit>
         <connectionLimitPerIP>0</connectionLimitPerIP>
+        <!--
+           Authorize only local users
+        -->
         <auth>
             <announce>forUnauthorizedAddresses</announce>
             <requireSSL>true</requireSSL>
@@ -155,5 +158,3 @@
         </handlerchain>
     </smtpserver>
 </smtpservers>
-
-

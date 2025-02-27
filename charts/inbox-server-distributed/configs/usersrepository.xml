@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -19,17 +18,8 @@
   under the License.
  -->
 
-<!-- Read https://james.apache.org/server/config-mailrepositorystore.html for further details -->
-
-<mailrepositorystore>
-    <defaultProtocol>postgres</defaultProtocol>
-    <mailrepositories>
-        <mailrepository class="org.apache.james.mailrepository.postgres.PostgresMailRepository">
-            <protocols>
-                <protocol>postgres</protocol>
-            </protocols>
-            <!-- Set if the messages should be listed sorted. False by default -->
-            <config FIFO="false" CACHEKEYS="true"/>
-        </mailrepository>
-    </mailrepositories>
-</mailrepositorystore>
+<usersrepository name="LocalUsers">
+    <algorithm>SHA-512</algorithm>
+    <enableVirtualHosting>true</enableVirtualHosting>
+    <enableForwarding>true</enableForwarding>
+</usersrepository>

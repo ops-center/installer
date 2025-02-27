@@ -17,12 +17,8 @@
   specific language governing permissions and limitations      
   under the License.                                           
  -->
-
-<!-- Read https://james.apache.org/server/config-recipientrewritetable.html for further details -->
-
-<!-- The default table for storing James' RecipientRewriteTable mappings. -->
-<recipientrewritetable>
-  <recursiveMapping>true</recursiveMapping>
-  <mappingLimit>10</mappingLimit>
-</recipientrewritetable>
-
+<domainlist>
+    <autodetect>false</autodetect>
+    <autodetectIP>false</autodetectIP>
+    <defaultDomain>${env:JAMES_EMAIL_DOMAIN}</defaultDomain>
+</domainlist>

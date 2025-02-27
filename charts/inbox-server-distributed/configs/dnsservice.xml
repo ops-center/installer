@@ -18,11 +18,8 @@
   under the License.                                           
  -->
 
-<!-- Read https://james.apache.org/server/config-recipientrewritetable.html for further details -->
-
-<!-- The default table for storing James' RecipientRewriteTable mappings. -->
-<recipientrewritetable>
-  <recursiveMapping>true</recursiveMapping>
-  <mappingLimit>10</mappingLimit>
-</recipientrewritetable>
-
+<dnsservice>
+  <autodiscover>true</autodiscover>
+  <authoritative>false</authoritative>
+  <maxcachesize>50000</maxcachesize>
+</dnsservice>

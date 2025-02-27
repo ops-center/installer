@@ -19,17 +19,12 @@
   under the License.
  -->
 
-<!-- Read https://james.apache.org/server/config-mailrepositorystore.html for further details -->
-
 <mailrepositorystore>
-    <defaultProtocol>postgres</defaultProtocol>
     <mailrepositories>
-        <mailrepository class="org.apache.james.mailrepository.postgres.PostgresMailRepository">
+        <mailrepository class="org.apache.james.mailrepository.cassandra.CassandraMailRepository">
             <protocols>
-                <protocol>postgres</protocol>
+                <protocol>cassandra</protocol>
             </protocols>
-            <!-- Set if the messages should be listed sorted. False by default -->
-            <config FIFO="false" CACHEKEYS="true"/>
         </mailrepository>
     </mailrepositories>
 </mailrepositorystore>
