@@ -74,7 +74,7 @@ adminIngress:
 
 postgresql:
   ## @param postgresql.enabled enable the bitnami/postgresql subchart and deploy Postgres
-  enabled: true
+  enabled: false
   # auth:
   #   secretName: ""
   #   username: "james"

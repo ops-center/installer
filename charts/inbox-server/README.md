@@ -78,7 +78,7 @@ The following table lists the configurable parameters of the `inbox-server` char
 | adminIngress.className                    |                                                                                                                                         | <code>""</code>                                            |
 | adminIngress.annotations                  |                                                                                                                                         | <code>{}</code>                                            |
 | adminIngress.tls.secretName               |                                                                                                                                         | <code>the-name-of-a-secret</code>                          |
-| postgresql.enabled                        | # @param postgresql.enabled enable the bitnami/postgresql subchart and deploy Postgres                                                  | <code>true</code>                                          |
+| postgresql.enabled                        | # @param postgresql.enabled enable the bitnami/postgresql subchart and deploy Postgres                                                  | <code>false</code>                                         |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm upgrade -i`. For example:
