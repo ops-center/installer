@@ -43,14 +43,15 @@ type InboxServer struct {
 
 // InboxServerSpec is the schema for Inbox server values file
 type InboxServerSpec struct {
-	NameOverride     string             `json:"nameOverride"`
-	FullnameOverride string             `json:"fullnameOverride"`
-	Dns              DnsSpec            `json:"dns"`
-	James            JamesSpec          `json:"james"`
-	ServiceMonitor   ServiceMonitorSpec `json:"serviceMonitor"`
-	Ingress          IngressSpec        `json:"ingress"`
-	AdminIngress     IngressSpec        `json:"adminIngress"`
-	Postgresql       PostgresqlSpec     `json:"postgresql"`
+	NameOverride     string                 `json:"nameOverride"`
+	FullnameOverride string                 `json:"fullnameOverride"`
+	Dns              DnsSpec                `json:"dns"`
+	James            JamesSpec              `json:"james"`
+	ServiceMonitor   ServiceMonitorSpec     `json:"serviceMonitor"`
+	Ingress          IngressSpec            `json:"ingress"`
+	AdminIngress     IngressSpec            `json:"adminIngress"`
+	Postgresql       PostgresqlSpec         `json:"postgresql"`
+	Migrate          InboxServerMigrateSpec `json:"migrate"`
 }
 
 type JamesSpec struct {
@@ -88,6 +89,18 @@ type PostgresqlAuth struct {
 
 type ExternalPostgresql struct {
 	Addr string `json:"addr"`
+}
+
+type InboxServerMigrateSpec struct {
+	Image              ImageReference            `json:"image"`
+	PodAnnotations     map[string]string         `json:"podAnnotations"`
+	PodSecurityContext *core.PodSecurityContext  `json:"podSecurityContext"`
+	SecurityContext    *core.SecurityContext     `json:"securityContext"`
+	Resources          core.ResourceRequirements `json:"resources"`
+	//+optional
+	NodeSelector map[string]string `json:"nodeSelector"`
+	Tolerations  []core.Toleration `json:"tolerations"`
+	Affinity     *core.Affinity    `json:"affinity"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
