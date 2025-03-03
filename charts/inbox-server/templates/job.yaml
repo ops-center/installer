@@ -1,0 +1,72 @@
+{{- if .Values.postgresql.external.addr }}
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "inbox-server.fullname" . }}-migrate
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 0
+  manualSelector: true
+  selector:
+    matchLabels:
+      component: migrate
+      {{- include "inbox-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.migrate.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        component: migrate
+        {{- include "inbox-server.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.migrate.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.migrate.securityContext | nindent 12 }}
+          image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          env:
+            - name: PGHOST
+              value: "{{ .Values.postgresql.external.addr }}"
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.auth.secretName }}"
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.postgresql.auth.secretName }}"
+                  key: password
+          args:
+            - psql
+            - -c
+            - "CREATE DATABASE {{ .Values.postgresql.auth.database }} WITH ENCODING 'UTF8' OWNER postgres;"
+          resources:
+            {{- toYaml .Values.migrate.resources | nindent 12 }}
+      {{- with .Values.migrate.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.migrate.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.migrate.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+
+{{- end }}
