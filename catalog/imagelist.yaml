@@ -1,7 +1,7 @@
 - bitnami/kubectl:latest
 - busybox:latest
 - cassandra:4.1.3
-- ghcr.io/appscode/inbox-agent:v0.0.2
+- ghcr.io/appscode/inbox-agent:v0.0.3
 - ghcr.io/appscode/inbox-server:latest
 - ghcr.io/appscode/kube-rbac-proxy:v0.15.0
 - ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:0.110.0
