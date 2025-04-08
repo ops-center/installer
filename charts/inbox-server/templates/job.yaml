@@ -49,12 +49,19 @@ spec:
                 secretKeyRef:
                   name: "{{ .Values.postgresql.auth.secretName }}"
                   key: password
+          command:
+            - /bin/sh
           args:
-            - psql
             - -c
-            - >
-              SELECT 'CREATE DATABASE {{ .Values.postgresql.auth.database }} WITH ENCODING ''UTF8'' OWNER postgres'
-              WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{{ .Values.postgresql.auth.database }}') \gexec
+            - |
+              DBNAME="{{ .Values.postgresql.auth.database }}";
+              echo "Checking if database $DBNAME exists...";
+              if [ "$(psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DBNAME'" )" != "1" ]; then
+                echo "Database $DBNAME does not exist. Creating...";
+                psql -c "CREATE DATABASE $DBNAME WITH ENCODING 'UTF8' OWNER postgres;";
+              else
+                echo "Database $DBNAME already exists.";
+              fi
           resources:
             {{- toYaml .Values.migrate.resources | nindent 12 }}
       {{- with .Values.migrate.nodeSelector }}
