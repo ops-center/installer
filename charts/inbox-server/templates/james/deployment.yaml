@@ -11,14 +11,14 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: jmap
-      {{- include "inbox-server.labels" . | nindent 6 }}
+      {{- include "inbox-server.selectorLabels" . | nindent 6 }}
   replicas: {{ .Values.james.replicaJmapInstanceCount }}
   template:
     metadata:
       labels:
         app.kubernetes.io/part-of: james
         app.kubernetes.io/component: jmap
-        {{- include "inbox-server.labels" . | nindent 8 }}
+        {{- include "inbox-server.selectorLabels" . | nindent 8 }}
     spec:
     {{- if .Values.dockerCredentials }}
       imagePullSecrets:
@@ -174,14 +174,14 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: imap-smtp
-      {{- include "inbox-server.labels" . | nindent 6 }}
+      {{- include "inbox-server.selectorLabels" . | nindent 6 }}
   replicas: {{ .Values.james.replicaImapSmtpInstanceCount }}
   template:
     metadata:
       labels:
         app.kubernetes.io/part-of: james
         app.kubernetes.io/component: imap-smtp
-        {{- include "inbox-server.labels" . | nindent 8 }}
+        {{- include "inbox-server.selectorLabels" . | nindent 8 }}
     spec:
     {{- if .Values.dockerCredentials }}
       imagePullSecrets:
