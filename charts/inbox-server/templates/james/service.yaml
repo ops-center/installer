@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/component: imap-smtp
-    {{- include "inbox-server.labels" . | nindent 4 }}
+    {{- include "inbox-server.selectorLabels" . | nindent 4 }}
   type: ClusterIP
   ports:
     - protocol: TCP
@@ -21,7 +21,7 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/component: imap-smtp
-    {{- include "inbox-server.labels" . | nindent 4 }}
+    {{- include "inbox-server.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 993
@@ -34,11 +34,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/part-of: james
-    {{- include "inbox-server.labels" . | nindent 4 }}
+    {{- include "inbox-server.selectorLabels" . | nindent 4 }}
 spec:
   selector:
     app.kubernetes.io/part-of: james
-    {{- include "inbox-server.labels" . | nindent 4 }}
+    {{- include "inbox-server.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 8000
@@ -53,7 +53,7 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/component: jmap
-    {{- include "inbox-server.labels" . | nindent 4 }}
+    {{- include "inbox-server.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 80
@@ -68,7 +68,7 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/component: imap-smtp
-    {{- include "inbox-server.labels" . | nindent 4 }}
+    {{- include "inbox-server.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 25
