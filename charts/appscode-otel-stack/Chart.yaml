@@ -15,7 +15,7 @@ dependencies:
 - name: kube-prometheus-stack
   repository: oci://ghcr.io/appscode-charts
   condition: kube-prometheus-stack.enabled
-  version: 69.2.2
+  version: 71.2.0
 - name: opentelemetry-kube-stack
   repository: oci://ghcr.io/appscode-charts
   condition: opentelemetry-kube-stack.enabled
