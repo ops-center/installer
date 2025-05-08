@@ -1,3 +1,4 @@
+---
 - bitnami/kubectl:latest
 - busybox:latest
 - cassandra:4.1.3
