@@ -176,9 +176,20 @@ properties:
             format: int32
             type: integer
         type: object
+      secret:
+        properties:
+          password:
+            type: string
+          username:
+            type: string
+        required:
+        - password
+        - username
+        type: object
     required:
     - image
     - livenessProbe
+    - secret
     type: object
   dns:
     properties:
@@ -393,9 +404,20 @@ properties:
         - repository
         - tag
         type: object
+      secret:
+        properties:
+          password:
+            type: string
+          username:
+            type: string
+        required:
+        - password
+        - username
+        type: object
     required:
     - enabled
     - image
+    - secret
     type: object
   rabbitmq:
     properties:
@@ -412,13 +434,28 @@ properties:
         - repository
         - tag
         type: object
+      secret:
+        properties:
+          password:
+            type: string
+          username:
+            type: string
+        required:
+        - password
+        - username
+        type: object
     required:
     - image
+    - secret
     type: object
   s3:
     properties:
+      accessKeyId:
+        type: string
       enabled:
         type: boolean
+      endpoint:
+        type: string
       image:
         properties:
           pullPolicy:
@@ -432,9 +469,17 @@ properties:
         - repository
         - tag
         type: object
+      region:
+        type: string
+      secretKey:
+        type: string
     required:
+    - accessKeyId
     - enabled
+    - endpoint
     - image
+    - region
+    - secretKey
     type: object
   service:
     properties:
