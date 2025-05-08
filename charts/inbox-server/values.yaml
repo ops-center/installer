@@ -12,9 +12,9 @@ dns:
   # jmapUrl: "jmap.example.com"
   # adminUrl: "admin.example.com"
   # smtpHostname: "smtp.example.com"
-  domain: ""
+  domain: "cloud.appscode.com"
   # in ip mode, the emailDomain is ace.internal, otherwise same as domain
-  emailDomain: ""
+  emailDomain: "cloud.appscode.com"
   targetIPs: []
 
 # Default values for james
