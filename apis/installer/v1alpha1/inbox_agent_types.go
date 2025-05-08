@@ -78,6 +78,10 @@ type InboxAgentSpec struct {
 	PodSecurityContext *core.PodSecurityContext `json:"podSecurityContext"`
 	ServiceAccount     ServiceAccountSpec       `json:"serviceAccount"`
 	// +optional
+	PersistentVolumeClaim *core.PersistentVolumeClaim `json:"persistentVolumeClaim"`
+	// +optionsl
+	VolumeMounts []core.VolumeMount `json:"volumeMounts"`
+	// +optional
 	Apiserver   InboxAgentApiserver `json:"apiserver"`
 	Monitoring  Monitoring          `json:"monitoring"`
 	InboxServer InboxServerInfo     `json:"inboxServer"`
