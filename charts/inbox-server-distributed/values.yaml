@@ -27,7 +27,7 @@ james:
     jwtPrivateKey: ""
     adminJWTPublicKey: ""
     dkimPrivateKey: ""
-  
+
   ## Environment for James
   env:
     jamesCassandraKeyspace: sandbox_james
@@ -75,9 +75,9 @@ ingress:
   enabled: false
   className: ""
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
   tls:
     secretName: the-name-of-a-secret
 
@@ -85,9 +85,9 @@ adminIngress:
   enabled: false
   className: ""
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
   tls:
     secretName: the-name-of-a-secret
 
@@ -119,7 +119,7 @@ cassandra:
   # securityContext ?
   # volumes
   # volumeMounts
-
+    #
 ###
 # Please refer to the values.yaml from the Helm package for databases
 # for a better explaination of the Elastic Search parameters.
