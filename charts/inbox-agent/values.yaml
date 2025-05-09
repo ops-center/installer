@@ -28,11 +28,15 @@ operator:
     allowPrivilegeEscalation: false
     capabilities:
       drop: ["ALL"]
-    readOnlyRootFilesystem: true
+    readOnlyRootFilesystem: false
     runAsNonRoot: true
     runAsUser: 65534
     seccompProfile:
       type: RuntimeDefault
+
+persistentVolumeClaim: null
+
+volumeMounts: null
 
 rbacproxy:
   # Docker registry used to pull operator image
@@ -50,7 +54,7 @@ rbacproxy:
     allowPrivilegeEscalation: false
     capabilities:
       drop: ["ALL"]
-    readOnlyRootFilesystem: true
+    readOnlyRootFilesystem: false
     runAsNonRoot: true
     runAsUser: 65534
     seccompProfile:

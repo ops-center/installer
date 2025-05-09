@@ -72,6 +72,9 @@ spec:
       {{- if .Values.inboxServer.caBundle }}
         - --inbox-server-ca-file=/var/inbox-server-auth/ca.crt
       {{- end }}
+      {{- if .Values.volumeMounts }}
+        - --inbox-agent-operator-pvc-mount-path={{ (index .Values.volumeMounts 0).mountPath }}
+      {{- end }}
         ports:
         - containerPort: 8443
         env:
@@ -113,7 +116,16 @@ spec:
         - mountPath: /var/inbox-server-auth
           name: inbox-server-auth
         {{- end }}
+        {{- if .Values.volumeMounts }}
+        - mountPath: {{ (index .Values.volumeMounts 0).mountPath }}
+          name: {{ include "inbox-agent.fullname" . }}-operator-pvc
+        {{- end }}
       volumes:
+      {{- if .Values.persistentVolumeClaim }}
+      - name: {{ include "inbox-agent.fullname" . }}-operator-pvc
+        persistentVolumeClaim:
+          claimName: {{ include "inbox-agent.fullname" . }}-operator-pvc
+      {{- end}}
       - name: tmpdir
         emptyDir: {}
       - name: serving-cert

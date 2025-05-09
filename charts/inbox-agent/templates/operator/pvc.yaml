@@ -1,0 +1,18 @@
+{{- if .Values.persistentVolumeClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "inbox-agent.fullname" . }}-operator-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+{{- range .Values.persistentVolumeClaim.spec.accessModes }}
+    - {{ . }}
+{{- end }}
+  {{- if .Values.persistentVolumeClaim.spec.storageClassName }}
+  storageClassName: {{ .Values.persistentVolumeClaim.spec.storageClassName }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.spec.resources.requests.storage }}
+{{- end }}
