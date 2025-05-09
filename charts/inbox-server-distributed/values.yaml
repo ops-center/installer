@@ -22,6 +22,12 @@ james:
   replicaJmapInstanceCount: 1
   replicaImapSmtpInstanceCount: 0
   image: ghcr.io/appscode/inbox-server:latest
+  secret:
+    jwtPublicKey: ""
+    jwtPrivateKey: ""
+    adminJWTPublicKey: ""
+    dkimPrivateKey: ""
+  
   ## Environment for James
   env:
     jamesCassandraKeyspace: sandbox_james
@@ -104,6 +110,9 @@ cassandra:
     failureThreshold: 5
     periodSeconds: 3
     timeoutSeconds: 20
+  secret:
+    username: ""
+    password: ""
   # readinessProbe
   # resources
   # podSecurityContext ?
@@ -122,6 +131,9 @@ opensearch:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: 2.1.0
+  secret:
+    username: ""
+    password: ""
   # livenessProbe
   # readinessProbe
   # resources
@@ -136,6 +148,9 @@ rabbitmq:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: 3.12.1-management
+  secret:
+    username: ""
+    password: ""
   # livenessProbe
   # readinessProbe
   # resources
@@ -151,6 +166,10 @@ s3:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: 8.8.20
+  endpoint: ""
+  region: ""
+  accessKeyId: ""
+  secretKey: ""
   # livenessProbe
   # readinessProbe
   # resources

@@ -39,6 +39,11 @@ james:
       requests:
         cpu: "150m"
         memory: "512Mi"
+  secret:
+    jwtPublicKey: ""
+    jwtPrivateKey: ""
+    adminJWTPublicKey: ""
+    dkimPrivateKey: ""
   tls:
     # secretName: the-name-of-a-secret
     secretName: ""
@@ -75,13 +80,13 @@ adminIngress:
 postgresql:
   ## @param postgresql.enabled enable the bitnami/postgresql subchart and deploy Postgres
   enabled: false
-  # auth:
-  #   secretName: ""
-  #   username: "james"
-  #   password: "secret1"
-  #   database: "james"
-  # external:
-  #   addr: ""
+  auth:
+     secretName: ""
+     username: "james"
+     password: "secret1"
+     database: "james"
+  external:
+     addr: ""
 
 migrate:
   # Docker registry containing app image
