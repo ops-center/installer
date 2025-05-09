@@ -1,12 +1,10 @@
 # Default values for inbox-agent.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
 # Overrides name template
 nameOverride: ""
 # Overrides fullname template
 fullnameOverride: ""
-
 dns:
   ## Default domain for all emailing components
   # jmapUrl: "jmap.example.com"
@@ -16,7 +14,6 @@ dns:
   # in ip mode, the emailDomain is ace.internal, otherwise same as domain
   emailDomain: ""
   targetIPs: []
-
 # Default values for james
 james:
   replicaJmapInstanceCount: 1
@@ -27,7 +24,6 @@ james:
     jwtPrivateKey: ""
     adminJWTPublicKey: ""
     dkimPrivateKey: ""
-
   ## Environment for James
   env:
     jamesCassandraKeyspace: sandbox_james
@@ -61,7 +57,6 @@ james:
   tls:
     # secretName: the-name-of-a-secret
     secretName: ""
-
 # Requires Prometheus Operator to be installed
 serviceMonitor:
   enabled: false
@@ -70,7 +65,6 @@ serviceMonitor:
     change-me: change-me
   # Scrape interval. Use Prometheus default value if not specified
   interval: 30s
-
 ingress:
   enabled: false
   className: ""
@@ -80,7 +74,6 @@ ingress:
   # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
   tls:
     secretName: the-name-of-a-secret
-
 adminIngress:
   enabled: false
   className: ""
@@ -90,7 +83,6 @@ adminIngress:
   # cert-manager.io/cluster-issuer: name-of-the-cluster-issuer
   tls:
     secretName: the-name-of-a-secret
-
 ###
 # Please refer to the values.yaml from the Helm package for databases
 # for a better explaination of the Cassandra parameters.
@@ -113,12 +105,12 @@ cassandra:
   secret:
     username: ""
     password: ""
-  # readinessProbe
-  # resources
-  # podSecurityContext ?
-  # securityContext ?
-  # volumes
-  # volumeMounts
+    # readinessProbe
+    # resources
+    # podSecurityContext ?
+    # securityContext ?
+    # volumes
+    # volumeMounts
     #
 ###
 # Please refer to the values.yaml from the Helm package for databases
@@ -141,7 +133,6 @@ opensearch:
   # securityContext ?
   # volumes
   # volumeMounts
-
 rabbitmq:
   image:
     repository: rabbitmq
@@ -158,7 +149,6 @@ rabbitmq:
   # securityContext ?
   # volumes
   # volumeMounts
-
 s3:
   enabled: false
   image:
@@ -177,7 +167,6 @@ s3:
   # securityContext ?
   # volumes
   # volumeMounts
-
 tika:
   enabled: false
   image:
@@ -192,7 +181,6 @@ tika:
   # securityContext ?
   # volumes
   # volumeMounts
-
 service:
   type: ClusterIP
   # port: 80
