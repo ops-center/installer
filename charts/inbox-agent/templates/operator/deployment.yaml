@@ -72,9 +72,7 @@ spec:
       {{- if .Values.inboxServer.caBundle }}
         - --inbox-server-ca-file=/var/inbox-server-auth/ca.crt
       {{- end }}
-      {{- if .Values.volumeMounts }}
-        - --storage-dir={{ (index .Values.volumeMounts 0).mountPath }}
-      {{- end }}
+        - --storage-dir=/var/alertstore
         ports:
         - containerPort: 8443
         env:
