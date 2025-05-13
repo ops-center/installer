@@ -117,11 +117,9 @@ spec:
         - mountPath: /var/alertstore
           name: {{ include "inbox-agent.fullname" . }}-operator-pvc
       volumes:
-      {{- if .Values.persistentVolumeClaim }}
       - name: {{ include "inbox-agent.fullname" . }}-operator-pvc
         persistentVolumeClaim:
           claimName: {{ include "inbox-agent.fullname" . }}-operator-pvc
-      {{- end}}
       - name: tmpdir
         emptyDir: {}
       - name: serving-cert

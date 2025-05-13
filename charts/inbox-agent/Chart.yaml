@@ -1,3 +1,4 @@
+---
 apiVersion: v2
 description: Inbox Agent by AppsCode
 name: inbox-agent
