@@ -359,18 +359,6 @@ func (in *InboxAgentSpec) DeepCopyInto(out *InboxAgentSpec) {
 		(*in).DeepCopyInto(*out)
 	}
 	in.ServiceAccount.DeepCopyInto(&out.ServiceAccount)
-	if in.PersistentVolumeClaim != nil {
-		in, out := &in.PersistentVolumeClaim, &out.PersistentVolumeClaim
-		*out = new(v1.PersistentVolumeClaim)
-		(*in).DeepCopyInto(*out)
-	}
-	if in.VolumeMounts != nil {
-		in, out := &in.VolumeMounts, &out.VolumeMounts
-		*out = make([]v1.VolumeMount, len(*in))
-		for i := range *in {
-			(*in)[i].DeepCopyInto(&(*out)[i])
-		}
-	}
 	out.Apiserver = in.Apiserver
 	in.Monitoring.DeepCopyInto(&out.Monitoring)
 	out.InboxServer = in.InboxServer

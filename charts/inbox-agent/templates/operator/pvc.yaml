@@ -1,4 +1,3 @@
-{{- if .Values.persistentVolumeClaim }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6,13 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
-{{- range .Values.persistentVolumeClaim.spec.accessModes }}
-    - {{ . }}
-{{- end }}
-  {{- if .Values.persistentVolumeClaim.spec.storageClassName }}
-  storageClassName: {{ .Values.persistentVolumeClaim.spec.storageClassName }}
-  {{- end }}
+  - ReadWriteOnce
+  storageClassName: local-path
   resources:
     requests:
-      storage: {{ .Values.persistentVolumeClaim.spec.resources.requests.storage }}
-{{- end }}
+      storage: 128Mi
