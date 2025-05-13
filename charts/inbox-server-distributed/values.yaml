@@ -103,13 +103,13 @@ cassandra:
   secret:
     username: ''
     password: ''
-  # readinessProbe
-  # resources
-  # podSecurityContext ?
-  # securityContext ?
-  # volumes
-  # volumeMounts
-  #
+# readinessProbe
+# resources
+# podSecurityContext ?
+# securityContext ?
+# volumes
+# volumeMounts
+#
 ###
 # Please refer to the values.yaml from the Helm package for databases
 # for a better explanation of the Elastic Search parameters.
@@ -124,13 +124,13 @@ opensearch:
   secret:
     username: ''
     password: ''
-  # livenessProbe
-  # readinessProbe
-  # resources
-  # podSecurityContext ?
-  # securityContext ?
-  # volumes
-  # volumeMounts
+# livenessProbe
+# readinessProbe
+# resources
+# podSecurityContext ?
+# securityContext ?
+# volumes
+# volumeMounts
 rabbitmq:
   image:
     repository: rabbitmq
@@ -140,13 +140,13 @@ rabbitmq:
   secret:
     username: ''
     password: ''
-  # livenessProbe
-  # readinessProbe
-  # resources
-  # podSecurityContext ?
-  # securityContext ?
-  # volumes
-  # volumeMounts
+# livenessProbe
+# readinessProbe
+# resources
+# podSecurityContext ?
+# securityContext ?
+# volumes
+# volumeMounts
 s3:
   enabled: false
   image:
@@ -172,13 +172,13 @@ tika:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: 2.8.0.0
-  # livenessProbe
-  # readinessProbe
-  # resources
-  # podSecurityContext ?
-  # securityContext ?
-  # volumes
-  # volumeMounts
+# livenessProbe
+# readinessProbe
+# resources
+# podSecurityContext ?
+# securityContext ?
+# volumes
+# volumeMounts
 service:
   type: ClusterIP
   # port: 80
