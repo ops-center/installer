@@ -1,11 +1,11 @@
+---
 # Default values for appscode-otel-stack.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 # This is to override the chart name.
-nameOverride: ""
-fullnameOverride: ""
-
+nameOverride: ''
+fullnameOverride: ''
 clickhouse:
   enabled: true
   # Global ClickHouse version and deletion policy
@@ -14,9 +14,8 @@ clickhouse:
   deploymentMode: standalone
   # Standalone deployment storage settings
   storage:
-    storageClassName: ""
-    accessModes:
-      - ReadWriteOnce
+    storageClassName: ''
+    accessModes: [ReadWriteOnce]
     resources:
       requests:
         storage: 1Gi
@@ -26,9 +25,8 @@ clickhouse:
       externallyManaged: false
       replicas: 1
       storage:
-        storageClassName: ""
-        accessModes:
-          - ReadWriteOnce
+        storageClassName: ''
+        accessModes: [ReadWriteOnce]
         resources:
           requests:
             storage: 1Gi
@@ -56,17 +54,15 @@ clickhouse:
                   cpu: 500m
                   memory: 1Gi
       storage:
-        storageClassName: ""
-        accessModes:
-          - ReadWriteOnce
+        storageClassName: ''
+        accessModes: [ReadWriteOnce]
         resources:
           requests:
             storage: 1Gi
-
 opentelemetry-kube-stack:
-  nameOverride: "appscode-otel-stack"
+  nameOverride: appscode-otel-stack
   enabled: true
-  clusterName: ""
+  clusterName: ''
   collectors:
     cluster:
       config:
@@ -100,16 +96,11 @@ opentelemetry-kube-stack:
         service:
           pipelines:
             logs:
-              exporters:
-                - clickhouse
-              receivers:
-                - otlp
-                - k8sobjects
+              exporters: [clickhouse]
+              receivers: [otlp, k8sobjects]
             metrics:
-              exporters:
-                - otlphttp/prometheus
-              receivers:
-                - otlp
+              exporters: [otlphttp/prometheus]
+              receivers: [otlp]
       enabled: true
       env:
         - name: CLICKHOUSE_USERNAME
@@ -141,13 +132,10 @@ opentelemetry-kube-stack:
         service:
           pipelines:
             logs:
-              exporters:
-                - otlp
+              exporters: [otlp]
             metrics:
-              exporters:
-                - otlp
-              receivers:
-                - prometheus
+              exporters: [otlp]
+              receivers: [prometheus]
       enabled: true
       labels:
         otel-collector-type: daemonset
@@ -196,9 +184,8 @@ opentelemetry-kube-stack:
   # https://opentelemetry.io/blog/2023/opamp-status/#opamp-in-kubernetes
   opAMPBridge:
     enabled: false
-
 kube-prometheus-stack:
-  nameOverride: "appscode-otel-stack"
+  nameOverride: appscode-otel-stack
   enabled: true
   grafana:
     enabled: false
@@ -206,7 +193,7 @@ kube-prometheus-stack:
     prometheusSpec:
       additionalArgs:
         - name: web.enable-otlp-receiver
-          value: ""
+          value: ''
       serviceMonitorSelector:
         matchLabels:
           scrape: disabled
@@ -214,8 +201,7 @@ kube-prometheus-stack:
       storageSpec:
         volumeClaimTemplate:
           spec:
-            accessModes:
-              - ReadWriteOnce
+            accessModes: [ReadWriteOnce]
             resources:
               requests:
                 storage: 50Gi
@@ -227,8 +213,7 @@ kube-prometheus-stack:
             regex: ^(.*)$
             replacement: $1
             separator: ;
-            sourceLabels:
-              - __meta_kubernetes_pod_node_name
+            sourceLabels: [__meta_kubernetes_pod_node_name]
             targetLabel: node
     tolerations:
       - operator: Exists

@@ -126,22 +126,44 @@ type TLSSpec struct {
 }
 
 type CassandraSpec struct {
-	Image         ImageReference `json:"image"`
-	LivenessProbe core.Probe     `json:"livenessProbe"`
+	Image         ImageReference  `json:"image"`
+	LivenessProbe core.Probe      `json:"livenessProbe"`
+	Secret        CassandraSecret `json:"secret"`
+}
+
+type CassandraSecret struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type OpensearchSpec struct {
-	Enabled bool           `json:"enabled"`
-	Image   ImageReference `json:"image"`
+	Enabled bool             `json:"enabled"`
+	Image   ImageReference   `json:"image"`
+	Secret  OpensearchSecret `json:"secret"`
+}
+
+type OpensearchSecret struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type RabbitmqSpec struct {
-	Image ImageReference `json:"image"`
+	Image  ImageReference `json:"image"`
+	Secret RabbitmqSecret `json:"secret"`
+}
+
+type RabbitmqSecret struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type S3Spec struct {
-	Enabled bool           `json:"enabled"`
-	Image   ImageReference `json:"image"`
+	Enabled     bool           `json:"enabled"`
+	Image       ImageReference `json:"image"`
+	Endpoint    string         `json:"endpoint"`
+	Region      string         `json:"region"`
+	AccessKeyId string         `json:"accessKeyId"`
+	SecretKey   string         `json:"secretKey"`
 }
 
 type TikaSpec struct {

@@ -72,6 +72,7 @@ spec:
       {{- if .Values.inboxServer.caBundle }}
         - --inbox-server-ca-file=/var/inbox-server-auth/ca.crt
       {{- end }}
+        - --storage-dir=/var/alertstore
         ports:
         - containerPort: 8443
         env:
@@ -113,7 +114,12 @@ spec:
         - mountPath: /var/inbox-server-auth
           name: inbox-server-auth
         {{- end }}
+        - mountPath: /var/alertstore
+          name: {{ include "inbox-agent.fullname" . }}-operator-pvc
       volumes:
+      - name: {{ include "inbox-agent.fullname" . }}-operator-pvc
+        persistentVolumeClaim:
+          claimName: {{ include "inbox-agent.fullname" . }}-operator-pvc
       - name: tmpdir
         emptyDir: {}
       - name: serving-cert
