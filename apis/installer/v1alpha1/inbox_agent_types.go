@@ -99,6 +99,7 @@ type InboxServerInfo struct {
 	JMAPSessionEndpoint string `json:"jmapSessionEndpoint"`
 	WebadminEndpoint    string `json:"webadminEndpoint"`
 	Token               string `json:"token"`
+	EmailDomain         string `json:"emailDomain"`
 	// +optional
 	CABundle string `json:"caBundle"`
 }

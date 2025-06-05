@@ -981,6 +981,8 @@ properties:
     properties:
       caBundle:
         type: string
+      emailDomain:
+        type: string
       jmapSessionEndpoint:
         type: string
       token:
@@ -988,6 +990,7 @@ properties:
       webadminEndpoint:
         type: string
     required:
+    - emailDomain
     - jmapSessionEndpoint
     - token
     - webadminEndpoint
