@@ -66,6 +66,9 @@ spec:
       {{- if .Values.inboxServer.webadminEndpoint }}
         - --webadminEndpoint={{ .Values.inboxServer.webadminEndpoint }}
       {{- end }}
+      {{- if .Values.inboxServer.emailDomain }}
+        - --emailDomain={{ .Values.inboxServer.emailDomain }}
+      {{- end }}
         env:
         - name: POD_NAME
           valueFrom:

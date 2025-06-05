@@ -1,3 +1,4 @@
+---
 project:
   name: Inbox Server Lite by AppsCode
   shortName: Inbox Server Lite
@@ -11,8 +12,7 @@ chart:
   name: inbox-server
   values: -- generate from values file --
   valuesExample: -- generate from values file --
-prerequisites:
-- Kubernetes 1.21+
+prerequisites: [Kubernetes 1.21+]
 release:
   name: inbox-server
   namespace: monitoring

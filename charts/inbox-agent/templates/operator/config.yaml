@@ -1,6 +1,7 @@
 {{ $data := dict
   "jmapSessionEndpoint" .Values.inboxServer.jmapSessionEndpoint
   "webadminEndpoint" .Values.inboxServer.webadminEndpoint
+  "emailDomain" .Values.inboxServer.emailDomain
   "token" .Values.inboxServer.token
 }}
 
