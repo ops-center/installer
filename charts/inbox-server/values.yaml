@@ -47,10 +47,10 @@ james:
     secretName: ''
 # Requires Prometheus Operator to be installed
 serviceMonitor:
-  enabled: false
+  enabled: true
   # Labels for Prometheus Operator to detect ServiceMonitor. Cannot be empty
   additionalLabels:
-    change-me: change-me
+    release: kube-prometheus-stack
   # Scrape interval. Use Prometheus default value if not specified
   interval: 30s
 ingress:
