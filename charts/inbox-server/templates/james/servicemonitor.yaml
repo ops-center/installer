@@ -10,8 +10,8 @@ spec:
   jobLabel: jobLabel
   selector:
     matchLabels:
-      app.kubernetes.io/part-of: james
       {{- include "inbox-server.labels" . | nindent 8 }}
+      app.kubernetes.io/part-of: james
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
