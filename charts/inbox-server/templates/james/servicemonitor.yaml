@@ -10,12 +10,12 @@ spec:
   jobLabel: jobLabel
   selector:
     matchLabels:
-      {{- include "inbox-server.labels" . | nindent 8 }}
+      {{- include "inbox-server.labels" . | nindent 6 }}
       app.kubernetes.io/part-of: james
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
   endpoints:
-  - port: web
-    path: /metrics
+    - port: web
+      path: /metrics
 {{- end }}
