@@ -77,7 +77,6 @@ jobs:
           echo "waiting for nodes to be ready ..."
           kubectl wait --for=condition=Ready nodes --all --timeout=5m
           kubectl get nodes
-          kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
           echo
           echo "install helm 3"
           pushd /usr/local/bin && sudo curl -fsSLO https://github.com/x-helm/helm/releases/latest/download/helm && sudo chmod +x helm && popd
