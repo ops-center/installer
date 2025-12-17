@@ -11,11 +11,11 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/part-of: james
-      {{- include "inbox-server.labels" . | nindent 8 }}
+      {{- include "inbox-server.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
   endpoints:
-  - port: web
-    path: /metrics
+    - port: web
+      path: /metrics
 {{- end }}
