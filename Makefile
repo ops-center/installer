@@ -21,7 +21,7 @@ BIN      := installer
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS          ?= "crd:crdVersions={v1}"
 # https://github.com/appscodelabs/gengo-builder
-CODE_GENERATOR_IMAGE ?= ghcr.io/appscode/gengo:release-1.29
+CODE_GENERATOR_IMAGE ?= ghcr.io/appscode/gengo:release-1.32
 API_GROUPS           ?= installer:v1alpha1
 
 # This version-strategy uses git tags to set the version string
@@ -48,7 +48,7 @@ endif
 ### These variables should not need tweaking.
 ###
 
-SRC_PKGS := apis # directories which hold app source (not vendored)
+SRC_PKGS := apis tests # directories which hold app source (not vendored)
 SRC_DIRS := $(SRC_PKGS)
 
 DOCKER_PLATFORMS := linux/amd64 linux/arm linux/arm64
@@ -352,8 +352,6 @@ ct: $(BUILD_DIRS)
 	      ct $(CT_COMMAND) --debug --validate-maintainers=false $(CT_ARGS) \
 	    "
 
-ADDTL_LINTERS   := gofmt,goimports,unparam
-
 .PHONY: lint
 lint: $(BUILD_DIRS)
 	@echo "running linter"
@@ -370,7 +368,7 @@ lint: $(BUILD_DIRS)
 	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
 	    --env GOFLAGS="-mod=vendor"                             \
 	    $(BUILD_IMAGE)                                          \
-	    golangci-lint run --enable $(ADDTL_LINTERS) --max-same-issues=100 --timeout=10m --exclude-files="generated.*\.go$\" --exclude-dirs-use-default --exclude-dirs=client,vendor
+	    golangci-lint run
 
 $(BUILD_DIRS):
 	@mkdir -p $@

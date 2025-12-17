@@ -33,8 +33,33 @@ func Test_CheckImageArchitectures(t *testing.T) {
 
 	if err := lib.CheckImageArchitectures([]string{
 		filepath.Join(dir, "catalog", "imagelist.yaml"),
-	}, nil); err != nil {
+	}, nil, nil); err != nil {
 		t.Errorf("CheckImageArchitectures() error = %v", err)
+	}
+}
+
+func Test_CheckUBIImageArchitectures(t *testing.T) {
+	dir, err := rootDir()
+	if err != nil {
+		t.Error(err)
+	}
+
+	const (
+		//	ubiAll = `global:
+		// distro:
+		//  ubi: all`
+		ubiOperator = `distro:
+  ubi: operator`
+		//	ubiCatalog = `distro:
+		// ubi: catalog`
+	)
+	values := map[string]string{
+		"grafana-operator":    ubiOperator,
+		"monitoring-operator": ubiOperator,
+		"trickster":           ubiOperator,
+	}
+	if err := lib.CheckHelmChartImageArchitectures(filepath.Join(dir, "charts"), values, nil, nil); err != nil {
+		t.Errorf("CheckUBIImageArchitectures() error = %v", err)
 	}
 }
 
