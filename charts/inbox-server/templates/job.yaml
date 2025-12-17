@@ -26,12 +26,22 @@ spec:
         component: migrate
         {{- include "inbox-server.selectorLabels" . | nindent 8 }}
     spec:
+      {{- if eq "true" ( include "distro.openshift" . ) }}
+      securityContext:
+        {{- toYaml (omit .Values.migrate.podSecurityContext "runAsUser" "runAsGroup" "fsGroup" "supplementalGroups") | nindent 8 }}
+      {{- else }}
       securityContext:
         {{- toYaml .Values.migrate.podSecurityContext | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- if eq "true" ( include "distro.openshift" . ) }}
+          securityContext:
+            {{- toYaml (omit .Values.migrate.securityContext "runAsUser" "runAsGroup" "fsGroup" "supplementalGroups") | nindent 12 }}
+          {{- else }}
           securityContext:
             {{- toYaml .Values.migrate.securityContext | nindent 12 }}
+          {{- end }}
           image: "{{ .Values.migrate.image.repository }}:{{ .Values.migrate.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
           env:

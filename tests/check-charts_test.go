@@ -54,9 +54,9 @@ func Test_CheckUBIImageArchitectures(t *testing.T) {
 		// ubi: catalog`
 	)
 	values := map[string]string{
-		"grafana-operator":    ubiOperator,
-		"monitoring-operator": ubiOperator,
-		"trickster":           ubiOperator,
+		"inbox-agent":              ubiOperator,
+		"inbox-server":             ubiOperator,
+		"inbox-server-distributed": ubiOperator,
 	}
 	if err := lib.CheckHelmChartImageArchitectures(filepath.Join(dir, "charts"), values, nil, nil); err != nil {
 		t.Errorf("CheckUBIImageArchitectures() error = %v", err)

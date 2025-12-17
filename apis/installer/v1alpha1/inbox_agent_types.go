@@ -19,6 +19,7 @@ package v1alpha1
 import (
 	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"kmodules.xyz/resource-metadata/apis/shared"
 )
 
 const (
@@ -81,6 +82,8 @@ type InboxAgentSpec struct {
 	Apiserver   InboxAgentApiserver `json:"apiserver"`
 	Monitoring  Monitoring          `json:"monitoring"`
 	InboxServer InboxServerInfo     `json:"inboxServer"`
+	// +optional
+	Distro shared.DistroSpec `json:"distro"`
 }
 
 type InboxAgentApiserver struct {
